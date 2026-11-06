@@ -225,9 +225,20 @@
   .icon-btn[aria-pressed="false"]{color:var(--gold)}
 
   /* ---------- HOME / EDIÇÕES ---------- */
-  .panel.home{width:min(960px,100%);padding:34px 28px 28px}
+  .panel.home{width:min(960px,100%);padding:24px}
+  .home-hero{display:flex;align-items:center;gap:24px;margin-bottom:18px;text-align:left}
+  .home-hero .hero-logo{width:84px;height:84px;flex-shrink:0;margin:0 6px}
+  .home-hero .kicker{margin-bottom:6px}
+  .home-hero .title{font-size:clamp(32px,4.5vw,52px)}
   .home .title-sub{margin:14px 0 10px}
-  .home-desc{max-width:520px;margin:0 auto 26px}
+  .home-desc{max-width:620px;margin:0;font-size:14px}
+  .home .edition{display:grid;grid-template-columns:44px minmax(0,1fr);gap:10px;padding:16px;align-content:start}
+  .home .ed-top,.home .ed-desc,.home .ed-meta,.home .edition .btn{grid-column:1 / -1}
+  .home .ed-icon{width:44px;height:44px;margin:0;border-radius:12px}
+  .home .ed-icon svg{width:24px;height:24px}
+  .home .ed-icon + div{align-self:center}
+  .home .edition h4{font-size:20px}
+  .home .edition .btn{align-self:end}
   .ed-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--graphite)}
   .ed-head h3{font-family:var(--display);font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px}
   .ed-head h3::before{content:"";width:10px;height:10px;background:var(--gold);transform:rotate(45deg);border:2px solid #000}
@@ -261,6 +272,19 @@
   .end-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
 
   /* ---------- RESPONSIVO ---------- */
+  @media (min-width:700px) and (max-height:720px){
+    .panel.home{padding:18px 22px}
+    .home-hero{gap:18px;margin-bottom:12px}
+    .home-hero .hero-logo{width:64px;height:64px}
+    .home-hero .title{font-size:38px}
+    .home .title-sub{margin:8px 0;font-size:11px;padding:4px 12px}
+    .home .ed-head{margin-bottom:10px;padding-bottom:8px}
+    .home .edition{gap:8px;padding:12px}
+    .home .ed-meta{margin:0}
+    .home .ed-meta li{padding:5px}
+    .home .edition .btn{padding:9px 16px}
+    .home .home-foot{margin-top:12px}
+  }
   @media (max-width:960px){
     main.board{grid-template-columns:1fr}
     .ladder{order:-1}
@@ -270,6 +294,9 @@
     .ladder .legend{display:none}
   }
   @media (max-width:640px){
+    .home-hero{flex-direction:column;text-align:center;gap:14px}
+    .home-hero .hero-logo{width:64px;height:64px}
+    .panel.home{padding:22px 16px}
     .app{padding:28px 12px 20px}
     .answers{grid-template-columns:1fr}
     .frame-inner{padding:30px 18px 24px}
@@ -386,11 +413,15 @@
   <!-- HOME / EDIÇÕES -->
   <div class="overlay show" id="ovHome" role="dialog" aria-modal="true" aria-labelledby="homeTitle">
     <div class="panel home">
+      <div class="home-hero">
       <img class="hero-logo" src="./img/logo.png" alt="Logo GALAPOS" />
+      <div class="home-heading">
       <span class="kicker">GALAPOS apresenta</span>
       <h2 class="title" id="homeTitle">Show do <span class="g">Milhão</span></h2>
-      <div class="title-sub">Quiz corporativo de alto valor</div>
+      <div class="title-sub">Quiz corporativo Galapos</div>
       <p class="desc home-desc">Escolha uma edição e prove seu conhecimento em 16 rodadas rumo ao <strong>prêmio máximo</strong>.</p>
+      </div>
+      </div>
       <div class="ed-head">
         <h3>Edições</h3>
         <button class="sound-pill sound-toggle" id="btnSoundHome" aria-pressed="true" aria-label="Som ligado"></button>
