@@ -6,6 +6,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  outputFileTracingIncludes: {
+    '/': ['./site/**/*'],
+    '/img/[file]': ['./site/img/**/*'],
+  },
 }
 
 export default nextConfig
