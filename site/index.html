@@ -77,6 +77,7 @@
   .badge{display:inline-flex;align-self:flex-start;align-items:center;gap:8px;background:var(--gold);color:var(--black);border:var(--ink);padding:6px 14px;border-radius:999px;font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.04em;box-shadow:0 3px 0 #000}
   .topic{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--light);font-weight:600}
   .topic::before{content:"";display:inline-block;width:8px;height:8px;background:var(--gold);border-radius:2px;margin-right:8px;transform:rotate(45deg) translateY(-1px)}
+  .difficulty{font-size:12px;color:var(--gold);font-weight:700}
   .timer{position:relative;width:64px;height:64px;flex-shrink:0}
   .timer svg{width:100%;height:100%;transform:rotate(-90deg)}
   .timer circle{fill:none;stroke-width:6}
@@ -273,7 +274,6 @@
   .edition.soon h4{color:var(--light)}
   .edition.soon .btn{background:var(--graphite);color:var(--light);cursor:not-allowed;box-shadow:0 3px 0 #000}
   .edition.soon .btn:hover{transform:none}
-  .home-foot{margin-top:18px;font-size:12px;color:var(--light);opacity:.7}
   .end-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
 
   /* ---------- RESPONSIVO ---------- */
@@ -288,7 +288,6 @@
     .home .ed-meta{margin:0}
     .home .ed-meta li{padding:5px}
     .home .edition .btn{padding:9px 16px}
-    .home .home-foot{margin-top:12px}
   }
   @media (max-width:960px){
     main.board{grid-template-columns:1fr}
@@ -355,6 +354,7 @@
               <div class="q-meta-left">
                 <span class="badge" id="qBadge">Pergunta 1 de 20</span>
                 <span class="topic" id="qTopic">Tópico</span>
+                <span class="difficulty" id="qDifficulty"></span>
               </div>
               <div class="timer" id="timer" role="timer" aria-label="Tempo restante">
                 <svg viewBox="0 0 64 64" aria-hidden="true"><circle class="track" cx="32" cy="32" r="27"/><circle class="prog" id="timerProg" cx="32" cy="32" r="27"/></svg>
@@ -427,7 +427,7 @@
       <span class="kicker">GALAPOS apresenta</span>
       <h2 class="title" id="homeTitle">Show do <span class="g">Milhão</span></h2>
       <div class="title-sub">Quiz corporativo Galapos</div>
-      <p class="desc home-desc">Escolha uma edição e prove seu conhecimento em 16 rodadas rumo ao <strong>prêmio máximo</strong>.</p>
+      <p class="desc home-desc">Avance por 16 rodadas de dificuldade crescente, do básico ao desafio final, rumo ao <strong>prêmio máximo</strong>.</p>
       </div>
       </div>
       <div class="ed-head">
@@ -438,7 +438,6 @@
         </div>
       </div>
       <div class="editions" id="editions"></div>
-      <p class="home-foot">Novas edições temáticas serão adicionadas em breve.</p>
     </div>
   </div>
 
@@ -474,30 +473,51 @@
 
 <script>
 const Q_SUBVENCAO = [
-  {t:"Conceito e Legislação",q:"Qual é a definição e finalidade da Subvenção Econômica segundo a legislação brasileira (Lei 10.973/2004 e Lei 11.196/2005)?",o:["Financiamento bancário reembolsável com juros reduzidos para capital de giro.","Instrumento governamental de apoio que oferece recursos públicos não reembolsáveis para empresas investirem em PD&I, compartilhando custos e riscos.","Isenção fiscal permanente de impostos estaduais para empresas exportadoras.","Subsídio direto para contratação de mão de obra não qualificada."],a:1,e:"A Subvenção Econômica (Lei nº 10.973/2004 e Lei nº 11.196/2005) é um instrumento de apoio que concede recursos não reembolsáveis para compartilhar custos e riscos de projetos de PD&I em empresas brasileiras."},
-  {t:"Aderência Temática",q:"O que acontece com uma proposta caso os analistas da FINEP considerem que ela não possui aderência à linha temática do edital?",o:["O projeto é automaticamente inabilitado, sem sequer seguir para a análise de mérito.","O projeto recebe nota mínima apenas no quesito de mercado, mas continua sendo avaliado.","A empresa é convidada a trocar de edital sem perder o prazo.","A FINEP readequa o projeto para outra linha temática de forma autônoma."],a:0,e:"A aderência à linha temática e às políticas públicas é o critério essencial de habilitação. Se a proposta não for considerada aderente, ela é inabilitada e nem segue para a análise de mérito."},
-  {t:"Objetivo Geral",q:"Quais são os três elementos indispensáveis que devem compor a redação do Objetivo Geral de uma proposta de subvenção?",o:["Histórico da empresa, orçamento detalhado e lista de fornecedores.","Aplicação/finalidade (O quê?), tecnologias utilizadas (Como?) e resultados/impactos esperados (Por quê?).","Plano de marketing, cotações financeiras e currículo dos diretores.","Localização da fábrica, cronograma de desembolso e faturamento dos últimos 3 anos."],a:1,e:"O Objetivo Geral deve explicitar a finalidade ou aplicação (O quê?), as tecnologias utilizadas (Como?) e os resultados ou impactos esperados (Por quê?)."},
-  {t:"Objetivo Geral",q:"Qual é a regra da FINEP sobre a alteração do Objetivo Geral aprovado durante a execução do projeto?",o:["O objetivo fim aprovado não pode sofrer alteração, embora os meios e rotas de P&D para alcançá-lo possam ser ajustados.","O objetivo geral pode ser alterado livremente a qualquer momento pela empresa.","Os meios de P&D são imutáveis, mas o objetivo final do produto pode ser alterado.","Qualquer alteração requer o cancelamento completo do contrato e devolução dos recursos."],a:0,e:"A FINEP não permite alterar o objetivo fim aprovado do projeto. O que pode ser ajustado durante o desenvolvimento são os meios técnicos ou rotas tecnológicas para alcançar esse objetivo."},
-  {t:"Resumo Publicável",q:"Qual é a principal particularidade e cuidado ao redigir o campo 'Resumo Publicável' na proposta?",o:["Deve conter o detalhamento completo dos segredos industriais para comprovar a tecnologia.","É o único campo divulgado publicamente pela FINEP, devendo focar na inovação e benefícios sem expor dados estratégicos ou sigilosos.","Deve conter tabelas detalhadas do orçamento financeiro aprovado.","É um texto exclusivo para avaliação sigilosa da banca examinadora externa."],a:1,e:"O Resumo Publicável é a única informação que a FINEP tem autorização para divulgar publicamente. Por isso, deve-se focar nos benefícios e na inovação, evitando detalhes estratégicos ou segredos corporativos."},
-  {t:"Descrição do Projeto",q:"Qual é a estrutura lógica de 4 partes recomendada para elaborar o tópico de 'Descrição do Projeto'?",o:["Orçamento → Fornecedores → Patentes → Vendas.","Contexto do problema → Solução proposta → Etapas de P&D (TRLs) → Resultados esperados.","Histórico corporativo → Certificações ISO → Currículos → Balanço financeiro.","Análise da concorrência → Canais de distribuição → Royalties → Exportação."],a:1,e:"A descrição do projeto funciona como um resumo expandido e deve encadear: 1. Contexto do problema (dor), 2. Solução proposta, 3. Etapas de P&D e 4. Resultados esperados."},
-  {t:"Risco Tecnológico",q:"Como a incerteza ou risco tecnológico deve ser conceituada e demonstrada na proposta?",o:["Como uma falha no planejamento financeiro ou flutuação de mercado.","Como uma barreira de conhecimento técnico-científico que exige atividades de P&D e estratégias de teste para superá-la, sem apresentar soluções prontas prévias.","Afirmando que a tecnologia já está totalmente pronta e sem qualquer risco de falha.","Atribuindo o risco exclusivamente à falta de fornecedores de insumos comuns no mercado."],a:1,e:"O risco tecnológico refere-se a incertezas técnico-científicas reais em que o resultado é incerto por limitação de conhecimento à época. A proposta deve apresentar hipóteses e estratégias de P&D para investigar o problema, sem fingir que a solução já está pronta."},
-  {t:"Maturidade Tecnológica (TRL)",q:"Qual é a faixa de TRL usualmente financiada pelo instrumento de Subvenção Econômica da FINEP?",o:["TRL 1 a TRL 2 (ideação e pesquisa básica teórica).","TRL 3 (prova de conceito) a TRL 7 (demonstração de protótipo em ambiente operacional).","TRL 8 a TRL 9 (produção comercial em escala total).","Apenas TRL 9 (comercialização e distribuição de mercado)."],a:1,e:"A Subvenção Econômica financia o desenvolvimento experimental que varia do TRL 3 (prova de conceito em laboratório) até o TRL 7 (demonstração de protótipo em ambiente operacional)."},
-  {t:"Maturidade Tecnológica (TRL)",q:"Qual entidade/mecanismo governamental costuma financiar projetos nos estágios TRL 1 e TRL 2 no Brasil?",o:["Subvenção econômica direta para grandes empresas industriais.","Agências de fomento como CNPq, CAPES e FAPs estaduais por meio de bolsas e auxílios a universidades/ICTs.","Financiamentos bancários comercialmente reembolsáveis com garantias reais.","Fundos privados de venture capital focados em comercialização."],a:1,e:"Projetos em TRL 1 e TRL 2 tratam de pesquisa básica teórica e princípios fundamentais, sendo tipicamente financiados por agências como CNPq, CAPES e FAPs junto a universidades e institutos de pesquisa."},
-  {t:"Qualificação e Parcerias",q:"Qual é a orientação recomendada quanto à participação de Instituições de Ciência e Tecnologia (ICTs) nos projetos de subvenção?",o:["As ICTs devem ser tratadas apenas como prestadoras de serviços básicos de suporte, como frete ou limpeza.","Considerar a participação de ICTs essencial, destinando cerca de 5% do valor captado para atuarem em desafios estratégicos de risco tecnológico.","Evitar qualquer parceria com ICTs para não compartilhar os direitos sobre os resultados.","Transferir 100% da execução técnica e orçamentária do projeto para a ICT parceira."],a:1,e:"Recomenda-se considerar o envolvimento de ICTs como item indispensável, destinando por volta de 5% dos recursos captados para que a ICT atue diretamente nos gargalos de conhecimento e risco tecnológico."},
-  {t:"Qualificação e Parcerias",q:"Qual é a diferença funcional entre uma empresa 'Coexecutora' e um 'Prestador de Serviços' no projeto?",o:["Coexecutoras aportam RH e participam estrategicamente da P&D; Prestadores de Serviços executam ensaios, testes ou análises pontuais.","Coexecutoras apenas realizam auditoria contábil; Prestadores de Serviços detêm a propriedade intelectual.","Não há diferença, ambos possuem exatamente os mesmos papéis e direitos contratuais.","Prestadores de Serviços assumem o risco do projeto; Coexecutoras fornecem matérias-primas gratuitas."],a:0,e:"Coexecutoras fornecem recursos humanos e participam ativamente da P&D e da gestão estratégica do projeto. Já os prestadores de serviços são contratados para tarefas específicas, ensaios, análises ou testes."},
-  {t:"Dados Institucionais",q:"Em relação aos investimentos prévios em P&D nos Dados Institucionais, qual prática NUNCA deve ser adotada pela empresa proponente?",o:["Destacar o uso de incentivos como a Lei do Bem ou projetos anteriores FINEP/ANEEL/FAPs.","Informar a ausência total de investimento prévio em P&D pela empresa.","Detalhar os gastos com equipe própria e materiais de laboratório dos anos anteriores.","Comprovar histórico contínuo de inovação técnica no setor de atuação."],a:1,e:"A FINEP busca apoiar empresas que já possuem cultura e trajetória de inovação. Informar ausência de investimentos prévios em P&D é altamente prejudicial, pois compromete a avaliação da capacidade de execução."},
-  {t:"Análise de Mérito",q:"Quais são os 3 pilares fundamentais que estruturam a Análise de Mérito de uma proposta na FINEP?",o:["Grau de Inovação, Relevância da Inovação e Consistência da Proposta.","Menor Preço, Tempo de Mercado e Quantidade de Funcionários.","Faturamento Bruto, Capital Social e Número de Filiais.","Patrimônio Líquido, Isenção Fiscal e Capital Estrangeiro."],a:0,e:"A avaliação de mérito da FINEP baseia-se em três pilares: 1. Grau de Inovação, 2. Relevância da Inovação e 3. Consistência da Proposta."},
-  {t:"Análise de Mérito",q:"Qual é a exigência mínima de nota no pilar 'Consistência da Proposta' para aprovação final no edital?",o:["Obter nota mínima de 50% do valor total da proposta.","Proposta consistente e atingimento de pelo menos 75% da pontuação máxima possível considerando Grau e Relevância da Inovação.","Aprovação unânime de 100% dos pareceristas sem qualquer ressalva técnica.","Atingir nota 3 no quesito de internacionalização obrigatoriamente."],a:1,e:"Para aprovação, a proposta deve ser considerada consistente e obter uma nota mínima de 75% em relação à pontuação máxima possível no conjunto de Grau e Relevância da Inovação."},
-  {t:"Informações de Mercado",q:"O que a proposta deve apresentar no tópico de 'Potencial de Internacionalização'?",o:["Obrigatoriedade de contrato de exportação assinado e faturamento externo imediato.","Argumentos e estudos demonstrando que a inovação possui atributos competitivos para expansão global, mesmo que a exportação não seja imediata.","Declaração de que o produto atenderá exclusivamente ao mercado municipal.","Comprovação de filiais abertas em pelo menos 3 continentes."],a:1,e:"A exportação não precisa estar nos planos imediatos, mas a proposta deve apresentar postura propositiva e argumentos sólidos evidenciando o potencial da inovação para competir no mercado internacional."},
-  {t:"Estratégia de Comercialização",q:"Qual documento complementar é fortemente recomendado obter com parceiros/clientes para enriquecer a Estratégia de Comercialização?",o:["Contrato social registrado em cartório dos concorrentes.","Cartas de Interesse de clientes-alvo ou parceiros estratégicos do setor.","Balanço patrimonial auditado dos fornecedores de insumos.","Laudo de avaliação imobiliária dos prédios comerciais da empresa."],a:1,e:"A obtenção de Cartas de Interesse junto a clientes-alvo ou parceiros estratégicos é uma boa prática que comprova a atratividade comercial e a demanda de mercado pelo produto em desenvolvimento."},
-  {t:"Orçamento e Alocação",q:"Quais tipos de despesas são priorizados e melhor avaliados pela FINEP na alocação dos recursos da subvenção?",o:["Construção de obras civis administrativas e compra de veículos da diretoria.","Itens diretamente intensivos em P&D, como equipes técnicas (RH), serviços especializados de P&D/testes e materiais de prototipagem.","Campanhas publicitárias na televisão e contratação de agências de marketing.","Aquisição de máquinas importadas de prateleira sem desenvolvimento tecnológico."],a:1,e:"Propostas que concentram o orçamento em despesas diretamente intensivas em P&D (pessoal técnico, serviços tecnológicos, ensaios e materiais para protótipos) recebem melhor avaliação da FINEP."},
-  {t:"Cronograma Físico e Indicadores",q:"Qual é a recomendação técnica para a estruturação das macroetapas e indicadores no Cronograma Físico?",o:["Criar uma única etapa genérica cobrindo os 36 meses do projeto.","Associar cada macroetapa a um TRL específico e definir indicadores objetivos e verificáveis (ex.: relatórios de testes, fotos de protótipos).","Definir indicadores baseados apenas em opiniões subjetivas da equipe de vendas.","Vincular a conclusão das etapas exclusivamente ao volume de receitas de vendas geradas."],a:1,e:"Cada macroetapa deve estar atrelada a uma evolução de TRL com 2 a 3 atividades e indicadores físicos concretos e verificáveis (como relatórios técnicos e registros de ensaios) anexáveis ao sistema FINEP."},
-  {t:"Boas Práticas de Redação",q:"Qual é o tom e o estilo gramatical adequado ao redigir os campos de Objetivo, Descrição do Projeto e Resultados?",o:["Linguagem publicitária de marketing, escrita em primeira pessoa do singular ('Eu desenvolvi...').","Linguagem técnica, formal e impessoal (terceira pessoa), utilizando tempo futuro para objetivos/resultados e apresentando fatos objetivos.","Estilo informal e coloquial, utilizando adjetivos vagos como 'revolucionário' e 'incomparável' sem justificativa.","Uso de gírias corporativas e promessas garantidas de aprovação e lucro extraordinário."],a:1,e:"A proposta deve ser redigida em linguagem técnica, formal e impessoal ('o projeto propõe', 'será desenvolvido'), usando o tempo futuro para metas/resultados e evitando tom promocional ou adjetivos vagos."},
-  {t:"Resultados e Impactos",q:"Além do impacto econômico direto na empresa proponente, como devem ser apresentados os Impactos Sociais e Ambientais da proposta?",o:["Limitando-se a citar o ganho de margem de lucro interna da diretoria.","Demonstrando benefícios amplos para a sociedade e cadeia produtiva, como geração de empregos qualificados, redução de pegada ambiental, sustentabilidade e eficiência energética.","Ignorando os impactos ambientais por não serem avaliados no edital.","Apresentando apenas os impostos recolhidos no município sem detalhar externalidades."],a:1,e:"Os impactos devem extrapolar o ambiente interno da empresa, demonstrando externalidades positivas para a sociedade (saúde, emprego qualificado, habitação) e sustentabilidade ambiental (redução de emissões, matriz limpa, economia circular)."}
+  {"t":"Conceito e Legislação","q":"Qual é a definição e finalidade da Subvenção Econômica segundo a legislação brasileira (Lei 10.973/2004 e Lei 11.196/2005)?","o":["Financiamento bancário reembolsável com juros reduzidos para capital de giro.","Instrumento governamental de apoio que oferece recursos públicos não reembolsáveis para empresas investirem em PD&I, compartilhando custos e riscos.","Isenção fiscal permanente de impostos estaduais para empresas exportadoras.","Subsídio direto para contratação de mão de obra não qualificada."],"a":1,"e":"A Subvenção Econômica (Lei nº 10.973/2004 e Lei nº 11.196/2005) é um instrumento de apoio que concede recursos não reembolsáveis para compartilhar custos e riscos de projetos de PD&I em empresas brasileiras.","id":"original-01","difficulty":1,"concept":"conceito"},
+  {"t":"Aderência Temática","q":"O que acontece com uma proposta caso os analistas da FINEP considerem que ela não possui aderência à linha temática do edital?","o":["O projeto é automaticamente inabilitado, sem sequer seguir para a análise de mérito.","O projeto recebe nota mínima apenas no quesito de mercado, mas continua sendo avaliado.","A empresa é convidada a trocar de edital sem perder o prazo.","A FINEP readequa o projeto para outra linha temática de forma autônoma."],"a":0,"e":"A aderência à linha temática e às políticas públicas é o critério essencial de habilitação. Se a proposta não for considerada aderente, ela é inabilitada e nem segue para a análise de mérito.","id":"original-02","difficulty":1,"concept":"aderencia"},
+  {"t":"Objetivo Geral","q":"Quais são os três elementos indispensáveis que devem compor a redação do Objetivo Geral de uma proposta de subvenção?","o":["Histórico da empresa, orçamento detalhado e lista de fornecedores.","Aplicação/finalidade (O quê?), tecnologias utilizadas (Como?) e resultados/impactos esperados (Por quê?).","Plano de marketing, cotações financeiras e currículo dos diretores.","Localização da fábrica, cronograma de desembolso e faturamento dos últimos 3 anos."],"a":1,"e":"O Objetivo Geral deve explicitar a finalidade ou aplicação (O quê?), as tecnologias utilizadas (Como?) e os resultados ou impactos esperados (Por quê?).","id":"original-03","difficulty":2,"concept":"objetivo-estrutura"},
+  {"t":"Objetivo Geral","q":"Qual é a regra da FINEP sobre a alteração do Objetivo Geral aprovado durante a execução do projeto?","o":["O objetivo fim aprovado não pode sofrer alteração, embora os meios e rotas de P&D para alcançá-lo possam ser ajustados.","O objetivo geral pode ser alterado livremente a qualquer momento pela empresa.","Os meios de P&D são imutáveis, mas o objetivo final do produto pode ser alterado.","Qualquer alteração requer o cancelamento completo do contrato e devolução dos recursos."],"a":0,"e":"A FINEP não permite alterar o objetivo fim aprovado do projeto. O que pode ser ajustado durante o desenvolvimento são os meios técnicos ou rotas tecnológicas para alcançar esse objetivo.","id":"original-04","difficulty":2,"concept":"objetivo-alteracao"},
+  {"t":"Resumo Publicável","q":"Qual é a principal particularidade e cuidado ao redigir o campo 'Resumo Publicável' na proposta?","o":["Deve conter o detalhamento completo dos segredos industriais para comprovar a tecnologia.","É o único campo divulgado publicamente pela FINEP, devendo focar na inovação e benefícios sem expor dados estratégicos ou sigilosos.","Deve conter tabelas detalhadas do orçamento financeiro aprovado.","É um texto exclusivo para avaliação sigilosa da banca examinadora externa."],"a":1,"e":"O Resumo Publicável é a única informação que a FINEP tem autorização para divulgar publicamente. Por isso, deve-se focar nos benefícios e na inovação, evitando detalhes estratégicos ou segredos corporativos.","id":"original-05","difficulty":1,"concept":"resumo"},
+  {"t":"Descrição do Projeto","q":"Qual é a estrutura lógica de 4 partes recomendada para elaborar o tópico de 'Descrição do Projeto'?","o":["Orçamento → Fornecedores → Patentes → Vendas.","Contexto do problema → Solução proposta → Etapas de P&D (TRLs) → Resultados esperados.","Histórico corporativo → Certificações ISO → Currículos → Balanço financeiro.","Análise da concorrência → Canais de distribuição → Royalties → Exportação."],"a":1,"e":"A descrição do projeto funciona como um resumo expandido e deve encadear: 1. Contexto do problema (dor), 2. Solução proposta, 3. Etapas de P&D e 4. Resultados esperados.","id":"original-06","difficulty":2,"concept":"descricao"},
+  {"t":"Risco Tecnológico","q":"Como a incerteza ou risco tecnológico deve ser conceituada e demonstrada na proposta?","o":["Como uma falha no planejamento financeiro ou flutuação de mercado.","Como uma barreira de conhecimento técnico-científico que exige atividades de P&D e estratégias de teste para superá-la, sem apresentar soluções prontas prévias.","Afirmando que a tecnologia já está totalmente pronta e sem qualquer risco de falha.","Atribuindo o risco exclusivamente à falta de fornecedores de insumos comuns no mercado."],"a":1,"e":"O risco tecnológico refere-se a incertezas técnico-científicas reais em que o resultado é incerto por limitação de conhecimento à época. A proposta deve apresentar hipóteses e estratégias de P&D para investigar o problema, sem fingir que a solução já está pronta.","id":"original-07","difficulty":2,"concept":"risco"},
+  {"t":"Maturidade Tecnológica (TRL)","q":"Qual é a faixa de TRL usualmente financiada pelo instrumento de Subvenção Econômica da FINEP?","o":["TRL 1 a TRL 2 (ideação e pesquisa básica teórica).","TRL 3 (prova de conceito) a TRL 7 (demonstração de protótipo em ambiente operacional).","TRL 8 a TRL 9 (produção comercial em escala total).","Apenas TRL 9 (comercialização e distribuição de mercado)."],"a":1,"e":"A Subvenção Econômica financia o desenvolvimento experimental que varia do TRL 3 (prova de conceito em laboratório) até o TRL 7 (demonstração de protótipo em ambiente operacional). A faixa efetivamente elegível depende do edital.","id":"original-08","difficulty":2,"concept":"trl-faixa"},
+  {"t":"Maturidade Tecnológica (TRL)","q":"Qual entidade/mecanismo governamental costuma financiar projetos nos estágios TRL 1 e TRL 2 no Brasil?","o":["Subvenção econômica direta para grandes empresas industriais.","Agências de fomento como CNPq, CAPES e FAPs estaduais por meio de bolsas e auxílios a universidades/ICTs.","Financiamentos bancários comercialmente reembolsáveis com garantias reais.","Fundos privados de venture capital focados em comercialização."],"a":1,"e":"Projetos em TRL 1 e TRL 2 tratam de pesquisa básica teórica e princípios fundamentais, sendo tipicamente financiados por agências como CNPq, CAPES e FAPs junto a universidades e institutos de pesquisa.","id":"original-09","difficulty":2,"concept":"trl-pesquisa"},
+  {"t":"Qualificação e Parcerias","q":"Na orientação de estruturação considerada neste quiz, qual é a recomendação para participação de ICTs no projeto?","o":["As ICTs devem ser tratadas apenas como prestadoras de serviços básicos de suporte, como frete ou limpeza.","Considerar a participação de ICTs essencial, destinando cerca de 5% do valor captado para atuarem em desafios estratégicos de risco tecnológico.","Evitar qualquer parceria com ICTs para não compartilhar os direitos sobre os resultados.","Transferir 100% da execução técnica e orçamentária do projeto para a ICT parceira."],"a":1,"e":"Recomenda-se considerar o envolvimento de ICTs como item indispensável, destinando por volta de 5% dos recursos captados para que a ICT atue diretamente nos gargalos de conhecimento e risco tecnológico. O percentual é uma recomendação de estruturação adotada neste material, não uma obrigação universal; confira o edital aplicável.","id":"original-10","difficulty":3,"concept":"ict"},
+  {"t":"Qualificação e Parcerias","q":"Qual é a diferença funcional entre uma empresa 'Coexecutora' e um 'Prestador de Serviços' no projeto?","o":["Coexecutoras aportam RH e participam estrategicamente da P&D; Prestadores de Serviços executam ensaios, testes ou análises pontuais.","Coexecutoras apenas realizam auditoria contábil; Prestadores de Serviços detêm a propriedade intelectual.","Não há diferença, ambos possuem exatamente os mesmos papéis e direitos contratuais.","Prestadores de Serviços assumem o risco do projeto; Coexecutoras fornecem matérias-primas gratuitas."],"a":0,"e":"Coexecutoras fornecem recursos humanos e participam ativamente da P&D e da gestão estratégica do projeto. Já os prestadores de serviços são contratados para tarefas específicas, ensaios, análises ou testes.","id":"original-11","difficulty":2,"concept":"parcerias"},
+  {"t":"Dados Institucionais","q":"Como a empresa deve apresentar seu histórico de investimentos em P&D nos Dados Institucionais da proposta?","o":["Inventar investimentos anteriores para demonstrar experiência.","Informar o histórico real, comprovar os investimentos existentes e verificar os requisitos de elegibilidade do edital, inclusive quando não houver investimento prévio.","Omitir a ausência de investimento prévio em qualquer situação.","Declarar experiência de terceiros como se fosse investimento próprio."],"a":1,"e":"O histórico deve ser verdadeiro e documentado. A ausência de investimento prévio deve ser informada quando corresponder à realidade; sua consequência depende dos critérios de elegibilidade e avaliação do edital.","id":"original-12","difficulty":2,"concept":"historico"},
+  {"t":"Análise de Mérito","q":"Quais são os 3 pilares fundamentais que estruturam a Análise de Mérito de uma proposta na FINEP?","o":["Grau de Inovação, Relevância da Inovação e Consistência da Proposta.","Menor Preço, Tempo de Mercado e Quantidade de Funcionários.","Faturamento Bruto, Capital Social e Número de Filiais.","Patrimônio Líquido, Isenção Fiscal e Capital Estrangeiro."],"a":0,"e":"A avaliação de mérito da FINEP baseia-se em três pilares: 1. Grau de Inovação, 2. Relevância da Inovação e 3. Consistência da Proposta.","id":"original-13","difficulty":2,"concept":"pilares"},
+  {"t":"Análise de Mérito","q":"Considerando o barema de avaliação utilizado neste quiz: qual é a exigência mínima de nota no pilar 'Consistência da Proposta' para aprovação final no edital?","o":["Obter nota mínima de 50% do valor total da proposta.","Proposta consistente e atingimento de pelo menos 75% da pontuação máxima possível considerando Grau e Relevância da Inovação.","Aprovação unânime de 100% dos pareceristas sem qualquer ressalva técnica.","Atingir nota 3 no quesito de internacionalização obrigatoriamente."],"a":1,"e":"Para aprovação, a proposta deve ser considerada consistente e obter uma nota mínima de 75% em relação à pontuação máxima possível no conjunto de Grau e Relevância da Inovação. Esses critérios e notas devem ser conferidos no edital específico.","id":"original-14","difficulty":3,"concept":"consistencia"},
+  {"t":"Informações de Mercado","q":"O que a proposta deve apresentar no tópico de 'Potencial de Internacionalização'?","o":["Obrigatoriedade de contrato de exportação assinado e faturamento externo imediato.","Argumentos e estudos demonstrando que a inovação possui atributos competitivos para expansão global, mesmo que a exportação não seja imediata.","Declaração de que o produto atenderá exclusivamente ao mercado municipal.","Comprovação de filiais abertas em pelo menos 3 continentes."],"a":1,"e":"A exportação não precisa estar nos planos imediatos, mas a proposta deve apresentar postura propositiva e argumentos sólidos evidenciando o potencial da inovação para competir no mercado internacional.","id":"original-15","difficulty":2,"concept":"internacionalizacao"},
+  {"t":"Estratégia de Comercialização","q":"Qual documento complementar é fortemente recomendado obter com parceiros/clientes para enriquecer a Estratégia de Comercialização?","o":["Contrato social registrado em cartório dos concorrentes.","Cartas de Interesse de clientes-alvo ou parceiros estratégicos do setor.","Balanço patrimonial auditado dos fornecedores de insumos.","Laudo de avaliação imobiliária dos prédios comerciais da empresa."],"a":1,"e":"A obtenção de Cartas de Interesse junto a clientes-alvo ou parceiros estratégicos é uma boa prática que comprova a atratividade comercial e a demanda de mercado pelo produto em desenvolvimento.","id":"original-16","difficulty":1,"concept":"cartas"},
+  {"t":"Orçamento e Alocação","q":"Quais tipos de despesas são priorizados e melhor avaliados pela FINEP na alocação dos recursos da subvenção?","o":["Construção de obras civis administrativas e compra de veículos da diretoria.","Itens diretamente intensivos em P&D, como equipes técnicas (RH), serviços especializados de P&D/testes e materiais de prototipagem.","Campanhas publicitárias na televisão e contratação de agências de marketing.","Aquisição de máquinas importadas de prateleira sem desenvolvimento tecnológico."],"a":1,"e":"Propostas que concentram o orçamento em despesas diretamente intensivas em P&D (pessoal técnico, serviços tecnológicos, ensaios e materiais para protótipos) recebem melhor avaliação da FINEP.","id":"original-17","difficulty":2,"concept":"orcamento"},
+  {"t":"Cronograma Físico e Indicadores","q":"Qual é a recomendação técnica para a estruturação das macroetapas e indicadores no Cronograma Físico?","o":["Criar uma única etapa genérica cobrindo os 36 meses do projeto.","Associar cada macroetapa a um TRL específico e definir indicadores objetivos e verificáveis (ex.: relatórios de testes, fotos de protótipos).","Definir indicadores baseados apenas em opiniões subjetivas da equipe de vendas.","Vincular a conclusão das etapas exclusivamente ao volume de receitas de vendas geradas."],"a":1,"e":"Cada macroetapa deve estar atrelada a uma evolução de TRL com 2 a 3 atividades e indicadores físicos concretos e verificáveis (como relatórios técnicos e registros de ensaios) anexáveis ao sistema FINEP.","id":"original-18","difficulty":2,"concept":"cronograma"},
+  {"t":"Boas Práticas de Redação","q":"Qual é o tom e o estilo gramatical adequado ao redigir os campos de Objetivo, Descrição do Projeto e Resultados?","o":["Linguagem publicitária de marketing, escrita em primeira pessoa do singular ('Eu desenvolvi...').","Linguagem técnica, formal e impessoal (terceira pessoa), utilizando tempo futuro para objetivos/resultados e apresentando fatos objetivos.","Estilo informal e coloquial, utilizando adjetivos vagos como 'revolucionário' e 'incomparável' sem justificativa.","Uso de gírias corporativas e promessas garantidas de aprovação e lucro extraordinário."],"a":1,"e":"A proposta deve ser redigida em linguagem técnica, formal e impessoal ('o projeto propõe', 'será desenvolvido'), usando o tempo futuro para metas/resultados e evitando tom promocional ou adjetivos vagos.","id":"original-19","difficulty":1,"concept":"redacao"},
+  {"t":"Resultados e Impactos","q":"Além do impacto econômico direto na empresa proponente, como devem ser apresentados os Impactos Sociais e Ambientais da proposta?","o":["Limitando-se a citar o ganho de margem de lucro interna da diretoria.","Demonstrando benefícios amplos para a sociedade e cadeia produtiva, como geração de empregos qualificados, redução de pegada ambiental, sustentabilidade e eficiência energética.","Ignorando os impactos ambientais por não serem avaliados no edital.","Apresentando apenas os impostos recolhidos no município sem detalhar externalidades."],"a":1,"e":"Os impactos devem extrapolar o ambiente interno da empresa, demonstrando externalidades positivas para a sociedade (saúde, emprego qualificado, habitação) e sustentabilidade ambiental (redução de emissões, matriz limpa, economia circular).","id":"original-20","difficulty":2,"concept":"externalidades"},
+  {"id":"csv-01","t":"Análise de Mérito - Consistência","q":"Considerando o barema de avaliação utilizado neste quiz: qual é o requisito pontual obrigatório no pilar de 'Consistência da Proposta' para que o projeto alcance a recomendação de aprovação pela FINEP?","o":["Obter pontuação mínima de 50% em cada um dos itens orçamentários declarados.","Alcançar proposta tecnicamente consistente e nota mínima de 75% em relação à nota máxima possível somando o Grau e a Relevância da Inovação.","Aprovação unânime de 100% da comissão avaliadora externa e nota máxima em internacionalização.","Demonstrar investimento prévio em P&D equivalente a pelo menos 50% do valor solicitado de subvenção."],"a":1,"e":"Conforme o barema de avaliação de mérito da FINEP, o pilar 'Consistência da Proposta' avalia a metodologia e TRLs, exigindo proposta consistente e nota mínima global de 75% da nota máxima somada nos pilares Grau e Relevância. Esses critérios e notas devem ser conferidos no edital específico.","difficulty":3,"concept":"consistencia"},
+  {"id":"csv-02","t":"Barema de Análise de Mérito","q":"Considerando o barema de avaliação utilizado neste quiz: dentre os direcionadores do pilar 'Grau de Inovação', quais possuem escala de nota máxima 0 a 3 (em vez da escala padrão de 0 a 5)?","o":["Intensidade da Inovação e Grau de Incerteza Tecnológica.","Qualificação da Equipe e Trajetória de Inovação da Empresa.","Abrangência da Inovação e Mobilização do Sistema de Inovação.","Composição dos Itens de Dispêndios e Relevância do Tema."],"a":1,"e":"No barema do Grau de Inovação, os critérios de 'Qualificação da Equipe' e 'Trajetória de Inovação da Empresa' possuem pontuação de 0 a 3, enquanto os demais direcionadores variam de 0 a 5. Esses critérios e notas devem ser conferidos no edital específico.","difficulty":3,"concept":"barema-equipe"},
+  {"id":"csv-03","t":"Barema - Relevância da Inovação","q":"Considerando o barema de avaliação utilizado neste quiz: no pilar 'Relevância da Inovação', qual é o direcionador que possui nota mínima eliminatória (nota 3) sob pena de reprovação da proposta?","o":["Potencial de Internacionalização (Nota 0 a 3).","Impacto na Estrutura de Mercado (Nota 0 a 3).","Relevância do Tema dentro das Prioridades do Setor (Nota 0 a 5, exigindo nota mínima 3).","Externalidades Ambientais e Sociais (Nota 0 a 4)."],"a":2,"e":"O direcionador 'Relevância do Tema dentro das Prioridades do Setor' possui escala de 0 a 5 e estabelece nota mínima 3 como requisito eliminatório de habilitação de mérito. Esses critérios e notas devem ser conferidos no edital específico.","difficulty":3,"concept":"barema-tema"},
+  {"id":"csv-04","t":"Escopo Técnico - Objetivo Geral","q":"Durante a execução de um contrato de Subvenção Econômica, qual é a regra rígida aplicada à alteração do Objetivo Geral aprovado?","o":["O objetivo fim pode ser alterado livremente mediante aditivo simplificado.","O objetivo fim aprovado não pode sofrer alteração sob hipótese alguma, embora os meios, rotas e metodologias de P&D possam ser readequados.","As rotas tecnológicas são imutáveis, porém o produto final pretendido pode ser substituído por outro do mesmo setor.","Qualquer ajuste nas metas de TRL cancela automaticamente o contrato sem direito a justificativa."],"a":1,"e":"O escopo final (objetivo fim) aprovado pela FINEP é imutável. Apenas as rotas tecnológicas, meios e métodos de P&D para alcançá-lo podem eventualmente ser ajustados durante a execução.","difficulty":2,"concept":"objetivo-alteracao"},
+  {"id":"csv-05","t":"Dinâmica de Riscos em TRLs","q":"Em um projeto que avança do TRL 3 ao TRL 7 e exige protótipos e testes cada vez mais caros, qual tendência relaciona incerteza tecnológica e exposição econômica?","o":["O Risco Tecnológico aumenta progressivamente, enquanto o Risco Econômico diminui.","A incerteza tecnológica tende a diminuir com as validações, enquanto a exposição econômica pode crescer com os custos de prototipagem e testes operacionais.","Ambos os riscos permanecem constantes e idênticos em todas as etapas.","O Risco Econômico torna-se nulo no TRL 6, enquanto o Risco Tecnológico atinge seu ápice no TRL 7."],"a":1,"e":"Validações reduzem incertezas técnicas. Neste cenário, investimentos crescentes em protótipos e testes podem aumentar a exposição econômica; isso não constitui uma regra universal sobre todo tipo de risco econômico.","difficulty":3,"concept":"dinamica-riscos"},
+  {"id":"csv-06","t":"Qualificação - Parcerias com ICTs","q":"Na orientação de estruturação considerada neste quiz, qual é a recomendação para participação de ICTs no projeto?","o":["Contratar ICTs apenas para serviços secundários de apoio administrativo e frete de equipamentos.","Considerar a participação de ICTs essencial, destinando cerca de 5% do valor captado para atuarem em desafios estratégicos diretamente ligados ao risco tecnológico.","Destinar no mínimo 50% de todo o orçamento do projeto obrigatoriamente para uma única ICT pública.","Transferir toda a propriedade intelectual e gestão executiva do projeto para a ICT parceira."],"a":1,"e":"Recomenda-se alocar ~5% do orçamento para ICTs e integrá-las na superação de desafios técnicos estratégicos de P&D, evitando utilizá-las apenas para apoio logístico ou testes rotineiros. O percentual é uma recomendação de estruturação adotada neste material, não uma obrigação universal; confira o edital aplicável.","difficulty":3,"concept":"ict"},
+  {"id":"csv-07","t":"Escopo Técnico - Risco Tecnológico","q":"Ao formular a seção de Risco Tecnológico na proposta, qual prática de escrita é considerada INCORRETA pelos avaliadores da FINEP?","o":["Descrever as incertezas técnico-científicas e embasar as estratégias de simulação para investigá-las.","Apresentar o risco acompanhado de uma solução pronta e resolvida (ex.: 'o risco de baixa sensibilidade será resolvido trocando o material').","Demostrar que a equipe técnica e os parceiros possuem capacidade para mitigar os desafios.","Relacionar as incertezas às rotas de testes e experimentos de bancada a serem realizados."],"a":1,"e":"Trazer soluções 'prontas' passa a impressão de que a incerteza não existe. O correto é apresentar o risco tecnológico e detalhar as hipóteses, testes e estratégias de P&D que serão conduzidos para tentar superá-lo.","difficulty":2,"concept":"risco"},
+  {"id":"csv-08","t":"Qualificação - Governança do Projeto","q":"Na estruturação de parcerias tecnológicas, qual é a diferença conceitual entre uma empresa 'Coexecutora' e um 'Prestador de Serviços'?","o":["Coexecutoras fornecem mão de obra própria (RH) e participam da gestão estratégica de P&D; Prestadores executam ensaios, análises ou estudos pontuais.","Prestadores de Serviços assumem responsabilidade fiscal; Coexecutoras prestam serviços sem vínculo técnico.","Não há distinção; ambas são contratadas exclusivamente via nota fiscal de serviços sem aporte de equipe.","Coexecutoras atuam sem orçamento no projeto; Prestadores retêm a propriedade industrial gerada."],"a":0,"e":"Coexecutoras alocam equipe técnica própria e compartilham a execução estratégica de P&D do projeto. Prestadores de Serviços (PF ou PJ) são contratados para tarefas específicas e delimitadas de apoio ou testes.","difficulty":2,"concept":"parcerias"},
+  {"id":"csv-09","t":"Dados Institucionais - Histórico de P&D","q":"Como a empresa deve apresentar seu histórico de investimentos em P&D nos Dados Institucionais da proposta?","o":["Inventar investimentos anteriores para demonstrar experiência.","Informar o histórico real, comprovar os investimentos existentes e verificar os requisitos de elegibilidade do edital, inclusive quando não houver investimento prévio.","Omitir a ausência de investimento prévio em qualquer situação.","Declarar experiência de terceiros como se fosse investimento próprio."],"a":1,"e":"O histórico deve ser verdadeiro e documentado. A ausência de investimento prévio deve ser informada quando corresponder à realidade; sua consequência depende dos critérios de elegibilidade e avaliação do edital.","difficulty":2,"concept":"historico"},
+  {"id":"csv-10","t":"Escopo Técnico - Resumo Publicável","q":"Por que o 'Resumo Publicável' exige validação minuciosa com o cliente antes do envio da proposta no sistema FINEP?","o":["Porque é o campo onde se insere a cópia do contrato social e balanço patrimonial.","Porque é o único campo do projeto que a FINEP tem autorização para divulgar publicamente, devendo omitir dados sigilosos e segredos industriais.","Porque serve para calcular a cotação do dólar no orçamento de importação.","Porque substitui o formulário de análise de impacto ambiental do projeto."],"a":1,"e":"O Resumo Publicável é divulgado pela FINEP em portais públicos após a aprovação. Portanto, deve destacar os benefícios e a inovação em linguagem acessível, sem expor segredos corporativos ou patentes confidenciais.","difficulty":1,"concept":"resumo"},
+  {"id":"csv-11","t":"Cronograma Físico e TRLs","q":"No cronograma físico do projeto, como deve ser feita a correlação entre as macroetapas e os Níveis de Maturidade Tecnológica (TRLs)?","o":["Todas as macroetapas devem obrigatoriamente estar concentradas no TRL 9 para garantir a venda.","Cada macroetapa deve estar associada a um TRL específico e apresentar avanço lógico encadeado (ex.: TRL 3 -> 4 -> 5 -> 6 -> 7).","Os TRLs são atribuídos de forma aleatória de acordo com a preferência da empresa.","A FINEP não permite atribuir TRLs a macroetapas que envolvem contratação de terceiros."],"a":1,"e":"O cronograma físico exige que cada macroetapa demonstre a evolução lógica da maturidade tecnológica (geralmente entre TRL 3 e 7), com metas e atividades associadas a TRLs específicos.","difficulty":2,"concept":"cronograma-trl"},
+  {"id":"csv-12","t":"Orçamento e Composição de Dispêndios","q":"No direcionador 'Composição dos Itens de Dispêndios' (Nota 0 a 5), qual perfil de orçamento recebe a melhor pontuação técnica?","o":["Orçamentos focados predominantemente em obras civis, reforma de sedes e compra de veículos.","Orçamentos com alta proporção de recursos alocados em itens intensivos em P&D (pessoal técnico próprio - RH, serviços de P&D/testes e materiais de prototipagem).","Propostas que destinam mais de 70% da subvenção para despesas administrativas e marketing digital.","Projetos que compram exclusivamente máquinas importadas prontas sem qualquer desenvolvimento interno."],"a":1,"e":"Propostas orçamentárias que concentram dispêndios em atividades diretas de P&D (RH especializado, ensaios, prototipagem e consultorias tecnológicas) recebem avaliação máxima dos pareceristas.","difficulty":2,"concept":"orcamento"},
+  {"id":"csv-13","t":"Escopo Técnico - Descrição do Projeto","q":"Qual é a estrutura lógica encadeada de 4 partes recomendada pelo Guia de Boas Práticas para elaborar a 'Descrição do Projeto'?","o":["1. Orçamento -> 2. Infraestrutura -> 3. Marcas -> 4. Fornecedores.","1. Contexto do problema (dor) -> 2. Solução proposta -> 3. Etapas de P&D (TRLs) -> 4. Resultados esperados.","1. Currículo dos sócios -> 2. Faturamento -> 3. Concorrentes -> 4. ISO 9001.","1. Patentes -> 2. Royalties -> 3. Exportação -> 4. Fluxo de caixa."],"a":1,"e":"A Descrição do Projeto funciona como a espinha dorsal do escopo técnico e deve seguir o roteiro: dor a ser resolvida, especificações da solução, principais fases de P&D e impactos/resultados pretendidos.","difficulty":2,"concept":"descricao"},
+  {"id":"csv-14","t":"Cronograma - Indicadores Físicos","q":"Qual é a exigência técnica da FINEP referente aos 'Indicadores Físicos de Execução' associados às atividades do projeto?","o":["Devidamente formulados com termos vagos como 'projeto concluído com sucesso'.","Serem objetivos, mensuráveis e comprováveis por documentos anexáveis no sistema (ex.: relatórios de ensaios, laudos técnicos, fotos de protótipos).","Dependerem exclusivamente do alcance de metas de faturamento comercial bruto da empresa.","Serem baseados na emissão de notas fiscais de vendas de produtos acabados."],"a":1,"e":"Os indicadores físicos devem permitir à FINEP auditar a execução técnica de cada atividade mediante evidências documentais claras (relatórios de bancada, fotometrias, registros de testes a campo).","difficulty":2,"concept":"indicadores"},
+  {"id":"csv-15","t":"Informações de Mercado - Internacionalização","q":"Como a proposta deve abordar a seção de 'Potencial de Internacionalização' caso a empresa ainda não atue no exterior nem tenha planos imediatos de exportação?","o":["Declarar que a solução não possui qualquer aplicação fora do mercado nacional.","Adotar postura propositiva e apresentar dados/estudos demonstrando que a inovação possui atributos competitivos adaptáveis a mercados globais semelhantes.","Anexar contratos definitivos de vendas assinados com compradores internacionais.","Omitir o campo de internacionalização para não perder pontos na análise de mérito."],"a":1,"e":"A exportação imediata não é obrigatória. O consultor deve embasar propositivamente o potencial de escalabilidade internacional da tecnologia a partir de características técnicas e análise de mercados similares.","difficulty":2,"concept":"internacionalizacao"},
+  {"id":"csv-16","t":"Comercialização - Validação de Mercado","q":"Qual mecanismo de validação comercial é recomendado para respaldar a 'Estratégia de Comercialização' e comprovar a atratividade perante os avaliadores?","o":["Cartas de Interesse formalizadas junto a potenciais clientes-alvo ou parceiros estratégicos do setor.","Registro de marca no INPI em classe internacional de exportação.","Contrato de exclusividade com fornecedores de matérias-primas básicas.","Pesquisa de satisfação interna realizada com os próprios funcionários da empresa."],"a":0,"e":"A inclusão de Cartas de Interesse (LOIs - Letters of Intent) assinadas por potenciais clientes e players do setor valida a existência de demanda real de mercado e fortalece o plano de comercialização.","difficulty":1,"concept":"cartas"},
+  {"id":"csv-17","t":"Elegibilidade de TRLs na Subvenção","q":"Em uma chamada que exige TRL inicial mínimo 3, por que um projeto restrito a TRL 1 e TRL 2 não é elegível?","o":["Porque a legislação proíbe o financiamento de pesquisas acadêmicas no Brasil.","Porque essas fases não atingem o TRL inicial mínimo exigido pela chamada, que parte de prova de conceito em TRL 3.","Porque o TRL 1 exige contrapartida financeira superior a 90% do valor do projeto.","Porque projetos de TRL 1 e 2 possuem risco tecnológico nulo."],"a":1,"e":"A elegibilidade depende da faixa de TRL estabelecida no edital. Se a chamada exige início em TRL 3, atividades restritas aos níveis 1 e 2 não atendem a esse requisito; isso não significa uma proibição universal para todos os instrumentos da FINEP.","difficulty":3,"concept":"trl-elegibilidade"},
+  {"id":"csv-18","t":"Boas Práticas de Redação Técnica","q":"Segundo o Guia de Boas Práticas na Escrita, quais regras gramaticais de tempo verbal e tom devem ser aplicadas nos Objetivos e Resultados Esperados?","o":["Uso de 1ª pessoa do plural ('nós desenvolvemos') em tom promocional de marketing.","Tempo futuro ('será desenvolvido', 'espera-se alcançar') com tom formal, objetivo e impessoal em 3ª pessoa, evitando adjetivos vagos.","Uso exclusivo do tempo passado no Objetivo Geral para demonstrar que o produto já existe.","Linguagem coloquial com adjetivos de efeito como 'solução revolucionária e infalível'."],"a":1,"e":"A escrita do projeto deve ser rigorosamente formal, impessoal (3ª pessoa) e no tempo futuro para metas/desenvolvimentos futuros, fundamentando afirmações em fatos e métricas objetivas.","difficulty":1,"concept":"redacao"},
+  {"id":"csv-19","t":"Relevância da Inovação - Externalidades","q":"Ao mensurar o direcionador de 'Externalidades' (Nota 0 a 4) no pilar de Relevância da Inovação, o que a proposta deve evidenciar?","o":["Apenas o aumento da margem de lucro líquido e dividendos distribuídos aos sócios.","Impactos positivos amplos para a sociedade e cadeia produtiva, como geração de empregos qualificados, sustentabilidade ambiental, saúde e avanço socioeconômico.","Ganhos exclusivos de fatia de mercado (market share) sobre concorrentes locais.","Redução do quadro de pessoal técnico próprio para cortar custos operacionais."],"a":1,"e":"Externalidades referem-se aos transbordamentos positivos (spillovers) gerados pelo recurso público para além da empresa proponente, incluindo impactos ambientais, sociais e na cadeia de valor.","difficulty":2,"concept":"externalidades"},
+  {"id":"csv-20","t":"Legislação e Conceito de Risco Tecnológico","q":"Qual é a definição jurídica e técnica de Risco Tecnológico estabelecida na Lei da Inovação (Lei 10.973/2004) e adotada pela FINEP?","o":["Possibilidade de oscilação nas taxas de juros bancárias que afetem os investimentos em ativos imobilizados.","Possibilidade de insucesso no desenvolvimento de solução decorrente de processo cujo resultado é incerto devido ao conhecimento técnico-científico insuficiente à época da ação.","Risco de inadimplência de clientes ou falência de fornecedores de insumos comuns.","Probabilidade de indeferimento de licenças ambientais em órgãos municipais."],"a":1,"e":"O Risco Tecnológico é formalmente definido pela Lei da Inovação como a incerteza no resultado da P&D decorrente da limitação do conhecimento técnico-científico disponível no momento.","difficulty":2,"concept":"risco"}
 ];
 
 /* ---------- EDIÇÕES ----------
-   Para adicionar uma nova edição, crie um array de perguntas (mín. 16, ideal 19+)
+   Para adicionar uma nova edição, crie um array com os níveis de DIFFICULTIES
+   e pelo menos 3 reservas por nível (veja docs/perguntas-e-audio.md)
    e inclua um objeto em EDITIONS. */
 const ICONS = {
   coin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15 9.2c-.6-1-1.7-1.6-3-1.6-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.2-3 2.2-1.3 0-2.5-.6-3-1.6M12 6v1.6M12 16.6V18"/></svg>',
@@ -541,10 +561,20 @@ const Sound = (() => {
     noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
     const d = noiseBuf.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1;
+    ctx.onstatechange = syncPlayback;
     return true;
   }
   const now = () => ctx.currentTime;
   const ready = () => ctx && ctx.state === "running";
+  function syncPlayback(){
+    if (ready()) {
+      master.gain.setTargetAtTime(muted ? 0 : .9 * volume, now(), .05);
+      if (mode && !timer) music(mode);
+    } else {
+      clearInterval(timer); timer = null;
+    }
+    document.dispatchEvent(new Event("soundstatechange"));
+  }
 
   function tone(f, dur, o = {}){
     if (!ctx) return;
@@ -606,9 +636,14 @@ const Sound = (() => {
     timer = setInterval(scheduler, 40);
   }
   function unlock(){
-    if (!init()) return;
-    const go = () => { if (mode && !timer) music(mode); };
-    if (ctx.state === "suspended") ctx.resume().then(go); else go();
+    if (!init()) return Promise.resolve();
+    syncPlayback();
+    if (!ready() && ctx.state !== "closed") {
+      return ctx.resume().then(syncPlayback).catch(() => {
+        document.dispatchEvent(new Event("soundstatechange"));
+      });
+    }
+    return Promise.resolve();
   }
   function duck(on){ if (ctx) musicBus.gain.setTargetAtTime(on ? .06 : .3, now(), .15); }
   function setMuted(v){
@@ -625,7 +660,7 @@ const Sound = (() => {
   const fx = fn => (...a) => { if (ready() && !muted) fn(now(), ...a); };
 
   return {
-    unlock, music, duck, setMuted, setVolume, getVolume: () => volume, isMuted: () => muted || volume === 0,
+    unlock, music, duck, setMuted, setVolume, isReady: () => Boolean(ready()), getVolume: () => volume, isMuted: () => muted || volume === 0,
     click:   fx(t => tone(880, .06, {type:"square", vol:.06})),
     select:  fx(t => { tone(660, .08, {type:"triangle", vol:.22}); tone(990, .14, {type:"triangle", vol:.2, at:t+.07}); }),
     newQ:    fx(t => { noise(.4, {freq:400, to:3200, vol:.1, attack:.15}); tone(523.25, .18, {type:"triangle", vol:.12, at:t+.3}); tone(783.99, .3, {type:"triangle", vol:.12, at:t+.4}); }),
@@ -674,8 +709,13 @@ const Sound = (() => {
 const SPEAKER_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
 const SPEAKER_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
 
-/* 16 rodadas + até 3 reservas para a ajuda "Pular" (20 perguntas no total) */
+/* 16 rodadas progressivas; reservas do mesmo nível para até 3 pulos. */
 const ROUNDS = 16;
+const DIFFICULTIES = [
+  {level:1, label:"Fácil", rounds:4},
+  {level:2, label:"Intermediário", rounds:7},
+  {level:3, label:"Difícil", rounds:5}
+];
 const PRIZES = [1e3,2e3,3e3,4e3,5e3,10e3,20e3,30e3,40e3,50e3,100e3,200e3,300e3,400e3,500e3,1e6];
 const SAFE = [4,9];
 const LETTERS = ["A","B","C","D"];
@@ -684,6 +724,7 @@ const TIME = 60;
 const $ = id => document.getElementById(id);
 const fmt = v => v >= 1e6 ? "R$ 1 MILHÃO" : v >= 1e3 ? `R$ ${v/1e3} mil` : `R$ ${v}`;
 const shuffle = arr => { const a = [...arr]; for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
+const escapeHtml = text => String(text).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 let S = {};
 
@@ -692,12 +733,28 @@ function prepareQuestion(raw){
   return {...raw, o: order.map(i => raw.o[i]), a: order.indexOf(raw.a)};
 }
 
+function buildProgressiveDeck(questions){
+  const deck = [], pool = [], concepts = new Set();
+  for (const stage of DIFFICULTIES) {
+    const candidates = shuffle(questions.filter(q => q.difficulty === stage.level));
+    if (candidates.length < stage.rounds + 3) throw new Error(`Perguntas insuficientes no nível ${stage.label}`);
+    for (let i = 0; i < stage.rounds; i++) {
+      // Prefer different concepts; equivalent variants remain available for skipping.
+      const index = candidates.findIndex(q => !concepts.has(q.concept));
+      const question = candidates.splice(index < 0 ? 0 : index, 1)[0];
+      concepts.add(question.concept);
+      deck.push(prepareQuestion(question));
+    }
+    pool.push(...candidates.map(prepareQuestion));
+  }
+  return {deck, pool};
+}
+
 function newGame(){
   $("brandSub").textContent = `Show do Milhão · ${EDITION.short}`;
   document.title = `Show do Milhão GALAPOS — ${EDITION.name}`;
-  const deck = shuffle(EDITION.questions).map(prepareQuestion);
-  S = { deck, pool: deck.slice(ROUNDS), round:0, q:null, picked:null, locked:false, skips:3, used:{cards:false,uni:false,aud:false}, helpsUsed:0, timer:null, left:TIME, eliminated:[] };
-  S.deck = deck.slice(0, ROUNDS);
+  const {deck, pool} = buildProgressiveDeck(EDITION.questions);
+  S = { deck, pool, seen:new Set(), round:0, q:null, picked:null, locked:false, skips:3, used:{cards:false,uni:false,aud:false}, helpsUsed:0, timer:null, left:TIME, eliminated:[] };
   ["hCards","hUni","hAud","hSkip","hStop"].forEach(id => $(id).disabled = false);
   $("skipLeft").textContent = "(3)";
   buildLadder();
@@ -734,13 +791,15 @@ function updateHud(){
 
 function loadRound(){
   S.q = S.deck[S.round];
+  S.seen.add(S.q.concept);
   S.picked = null; S.locked = false; S.eliminated = [];
   $("qBadge").textContent = S.round === PRIZES.length-1 ? "Pergunta do Milhão" : `Pergunta ${S.round+1} de ${ROUNDS}`;
   $("qTopic").textContent = S.q.t;
+  $("qDifficulty").textContent = `Nível ${S.q.difficulty} · ${DIFFICULTIES.find(stage => stage.level === S.q.difficulty).label}`;
   const qEl = $("question");
   qEl.textContent = S.q.q;
   qEl.classList.remove("enter"); void qEl.offsetWidth; qEl.classList.add("enter");
-  $("answers").innerHTML = S.q.o.map((txt,i) => `<button class="ans" data-i="${i}" aria-label="Alternativa ${LETTERS[i]}: ${txt.replace(/"/g,"&quot;")}"><span class="letter">${LETTERS[i]}</span><span>${txt}</span></button>`).join("");
+  $("answers").innerHTML = S.q.o.map((txt,i) => `<button class="ans" data-i="${i}" aria-label="Alternativa ${LETTERS[i]}: ${escapeHtml(txt)}"><span class="letter">${LETTERS[i]}</span><span>${escapeHtml(txt)}</span></button>`).join("");
   document.querySelectorAll(".ans").forEach(b => b.addEventListener("click", () => pick(+b.dataset.i)));
   $("confirm").classList.remove("show");
   $("feedback").classList.remove("show");
@@ -960,10 +1019,13 @@ function useAud(){
 }
 
 function useSkip(){
-  if (S.skips === 0 || !S.pool.length) return;
+  if (S.locked || S.skips === 0 || S.round === ROUNDS-1) return;
+  let index = S.pool.findIndex(q => q.difficulty === S.q.difficulty && !S.seen.has(q.concept));
+  if (index < 0) index = S.pool.findIndex(q => q.difficulty === S.q.difficulty);
+  if (index < 0) return;
   S.skips--; S.helpsUsed++;
   $("skipLeft").textContent = `(${S.skips})`;
-  S.deck[S.round] = S.pool.shift();
+  S.deck[S.round] = S.pool.splice(index, 1)[0];
   loadRound();
 }
 
@@ -981,7 +1043,7 @@ function renderHome(){
       <div><h4>${ed.name}</h4><p class="ed-org">${ed.org}</p></div>
       <p class="ed-desc">${ed.desc}</p>
       <ul class="ed-meta">
-        <li><b>${ed.questions.length}</b>perguntas</li>
+        <li><b>${ed.questions.length}</b>no banco</li>
         <li><b>60s</b>por rodada</li>
         <li><b>4</b>ajudas</li>
       </ul>
@@ -1018,34 +1080,42 @@ function goHome(){
 
 function syncSound(){
   const m = Sound.isMuted();
+  const active = !m && Sound.isReady();
   const percent = Math.round(Sound.getVolume() * 100);
   document.querySelectorAll(".volume-slider").forEach(input => {
     input.value = percent;
     input.setAttribute("aria-valuetext", `${percent}%`);
   });
   document.querySelectorAll("[data-volume-value]").forEach(output => output.value = `${percent}%`);
-  $("btnSound").innerHTML = m ? SPEAKER_OFF : SPEAKER_ON;
-  $("btnSoundHome").innerHTML = (m ? SPEAKER_OFF : SPEAKER_ON) + `<span>${m ? "Som desligado" : "Som ligado"}</span>`;
+  $("btnSound").innerHTML = active ? SPEAKER_ON : SPEAKER_OFF;
+  $("btnSoundHome").innerHTML = (active ? SPEAKER_ON : SPEAKER_OFF) + `<span>${m ? "Som desligado" : active ? "Som ligado" : "Ativar som"}</span>`;
   document.querySelectorAll(".sound-toggle").forEach(b => {
-    b.setAttribute("aria-pressed", String(!m));
-    b.setAttribute("aria-label", m ? "Ligar som" : "Desligar som");
+    b.setAttribute("aria-pressed", String(active));
+    b.setAttribute("aria-label", active ? "Desligar som" : "Ativar som");
   });
 }
 document.querySelectorAll(".sound-toggle").forEach(b => b.addEventListener("click", () => {
-  Sound.unlock();
   if (Sound.getVolume() === 0) Sound.setVolume(1);
-  else Sound.setMuted(!Sound.isMuted());
+  else Sound.setMuted(Sound.isReady() && !Sound.isMuted());
+  Sound.unlock().then(syncSound);
   syncSound();
   Sound.click();
 }));
 document.querySelectorAll(".volume-slider").forEach(input => input.addEventListener("input", () => {
-  Sound.unlock();
   Sound.setVolume(Number(input.value) / 100);
+  Sound.unlock().then(syncSound);
   syncSound();
 }));
 
-document.addEventListener("pointerdown", Sound.unlock, { once:true });
-document.addEventListener("keydown", Sound.unlock, { once:true });
+document.addEventListener("soundstatechange", syncSound);
+const unlockOnInteraction = event => {
+  if (!event.target.closest(".sound-toggle, .volume-slider")) Sound.unlock();
+};
+// Retry on genuine interactions: an early blocked attempt must not consume activation.
+document.addEventListener("pointerdown", unlockOnInteraction);
+document.addEventListener("click", unlockOnInteraction);
+document.addEventListener("keydown", unlockOnInteraction);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) Sound.unlock(); });
 
 $("btnRestart").addEventListener("click", () => { $("ovEnd").classList.remove("show"); Sound.start(); setTimeout(newGame, 600); });
 $("btnEndHome").addEventListener("click", goHome);
@@ -1074,6 +1144,7 @@ buildLadder();
 renderHome();
 syncSound();
 Sound.music("menu");
+Sound.unlock();
 </script>
 </body>
 </html>

@@ -1,0 +1,41 @@
+﻿ID,Topico,Nivel,Classificacao,Justificativa
+original-01,Conceito e Legislação,1,Fácil,Reconhecimento da finalidade do instrumento.
+original-02,Aderência Temática,1,Fácil,Identificação direta de requisito de enquadramento.
+original-03,Objetivo Geral,2,Intermediário,"Organização da finalidade, meios e resultados."
+original-04,Objetivo Geral,2,Intermediário,Distinção entre finalidade e rota de execução.
+original-05,Resumo Publicável,1,Fácil,Noção básica de divulgação e confidencialidade.
+original-06,Descrição do Projeto,2,Intermediário,Encadeamento das partes de uma proposta.
+original-07,Risco Tecnológico,2,Intermediário,Distinção entre incerteza técnica e risco comercial.
+original-08,Maturidade Tecnológica (TRL),2,Intermediário,Conhecimento de estágios de maturidade.
+original-09,Maturidade Tecnológica (TRL),2,Intermediário,Associação entre maturidade e instrumentos de fomento.
+original-10,Qualificação e Parcerias,3,Difícil,Memorização de recomendação orçamentária específica.
+original-11,Qualificação e Parcerias,2,Intermediário,Distinção de papéis na execução de P&D.
+original-12,Dados Institucionais,2,Intermediário,Apresentação documentada do histórico real da empresa.
+original-13,Análise de Mérito,2,Intermediário,Reconhecimento dos três eixos da avaliação.
+original-14,Análise de Mérito,3,Difícil,Memorização de limiar e combinação de critérios.
+original-15,Informações de Mercado,2,Intermediário,Aplicação de competitividade a mercados externos.
+original-16,Estratégia de Comercialização,1,Fácil,Reconhecimento de documento de validação comercial.
+original-17,Orçamento e Alocação,2,Intermediário,Relacionamento entre dispêndios e atividades de P&D.
+original-18,Cronograma Físico e Indicadores,2,Intermediário,Integração de maturidade e evidências de execução.
+original-19,Boas Práticas de Redação,1,Fácil,Reconhecimento de tom e forma textual.
+original-20,Resultados e Impactos,2,Intermediário,Distinção de benefícios internos e coletivos.
+csv-01,Análise de Mérito - Consistência,3,Difícil,Limiar numérico e combinação de pilares de mérito.
+csv-02,Barema de Análise de Mérito,3,Difícil,Memorização de escalas de pontuação por critério.
+csv-03,Barema - Relevância da Inovação,3,Difícil,Identificação de critério e nota eliminatória.
+csv-04,Escopo Técnico - Objetivo Geral,2,Intermediário,Distinção entre finalidade aprovada e meios.
+csv-05,Dinâmica de Riscos em TRLs,3,Difícil,"Relação entre maturidade, incerteza e custos."
+csv-06,Qualificação - Parcerias com ICTs,3,Difícil,Recomendação percentual e papel estratégico de ICTs.
+csv-07,Escopo Técnico - Risco Tecnológico,2,Intermediário,Aplicação do conceito de incerteza à escrita técnica.
+csv-08,Qualificação - Governança do Projeto,2,Intermediário,Distinção de papéis de execução e contratação.
+csv-09,Dados Institucionais - Histórico de P&D,2,Intermediário,Apresentação verdadeira e documentada do histórico.
+csv-10,Escopo Técnico - Resumo Publicável,1,Fácil,Princípio básico de sigilo no resumo público.
+csv-11,Cronograma Físico e TRLs,2,Intermediário,Encadeamento de etapas e maturidade.
+csv-12,Orçamento e Composição de Dispêndios,2,Intermediário,Priorização de atividades diretamente ligadas à P&D.
+csv-13,Escopo Técnico - Descrição do Projeto,2,Intermediário,Sequenciamento da descrição técnica.
+csv-14,Cronograma - Indicadores Físicos,2,Intermediário,Aplicação de mensuração e comprovação de atividades.
+csv-15,Informações de Mercado - Internacionalização,2,Intermediário,Aplicação do potencial competitivo ao mercado externo.
+csv-16,Comercialização - Validação de Mercado,1,Fácil,Reconhecimento de evidência de demanda comercial.
+csv-17,Elegibilidade de TRLs na Subvenção,3,Difícil,Aplicação de limite de TRL à elegibilidade da chamada.
+csv-18,Boas Práticas de Redação Técnica,1,Fácil,Reconhecimento de tom impessoal e tempo verbal.
+csv-19,Relevância da Inovação - Externalidades,2,Intermediário,Distinção de efeitos sociais e ganhos privados.
+csv-20,Legislação e Conceito de Risco Tecnológico,2,Intermediário,Reconhecimento de incerteza técnico-científica.
