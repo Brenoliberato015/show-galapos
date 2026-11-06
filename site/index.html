@@ -223,6 +223,11 @@
   .icon-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #000}
   .icon-btn svg{width:22px;height:22px}
   .icon-btn[aria-pressed="false"]{color:var(--gold)}
+  .audio-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .volume-control{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--light)}
+  .volume-slider{width:92px;accent-color:var(--gold);cursor:pointer}
+  .volume-slider:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:4px}
+  .volume-control output{min-width:4ch;text-align:right;font-variant-numeric:tabular-nums}
 
   /* ---------- HOME / EDIÇÕES ---------- */
   .panel.home{width:min(960px,100%);padding:24px}
@@ -239,7 +244,7 @@
   .home .ed-icon + div{align-self:center}
   .home .edition h4{font-size:20px}
   .home .edition .btn{align-self:end}
-  .ed-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--graphite)}
+  .ed-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--graphite)}
   .ed-head h3{font-family:var(--display);font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px}
   .ed-head h3::before{content:"";width:10px;height:10px;background:var(--gold);transform:rotate(45deg);border:2px solid #000}
   .sound-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--graphite);border:var(--ink);box-shadow:0 3px 0 #000;font-size:12px;font-weight:700;letter-spacing:.06em}
@@ -329,7 +334,10 @@
           <div class="chip"><span>Parar</span><b id="sStop">R$ 0</b></div>
           <div class="chip miss"><span>Errar</span><b id="sMiss">R$ 0</b></div>
         </div>
-        <button class="icon-btn sound-toggle" id="btnSound" aria-pressed="true" aria-label="Som ligado"></button>
+        <div class="audio-controls">
+          <button class="icon-btn sound-toggle" id="btnSound" aria-pressed="true" aria-label="Som ligado"></button>
+          <label class="volume-control" for="volumeGame"><span class="sr-only">Volume do jogo</span><input class="volume-slider" id="volumeGame" type="range" min="0" max="100" step="1" value="100" /><output for="volumeGame" data-volume-value>100%</output></label>
+        </div>
         <button class="icon-btn" id="btnHomeTop" aria-label="Voltar às edições">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         </button>
@@ -424,7 +432,10 @@
       </div>
       <div class="ed-head">
         <h3>Edições</h3>
-        <button class="sound-pill sound-toggle" id="btnSoundHome" aria-pressed="true" aria-label="Som ligado"></button>
+        <div class="audio-controls">
+          <button class="sound-pill sound-toggle" id="btnSoundHome" aria-pressed="true" aria-label="Som ligado"></button>
+          <label class="volume-control" for="volumeHome"><span class="sr-only">Volume do jogo</span><input class="volume-slider" id="volumeHome" type="range" min="0" max="100" step="1" value="100" /><output for="volumeHome" data-volume-value>100%</output></label>
+        </div>
       </div>
       <div class="editions" id="editions"></div>
       <p class="home-foot">Novas edições temáticas serão adicionadas em breve.</p>
@@ -502,8 +513,14 @@ let EDITION = EDITIONS[0];
 /* ---------- ÁUDIO (sintetizado com Web Audio API) ---------- */
 const Sound = (() => {
   let ctx = null, master, sfx, musicBus, noiseBuf, timer = null, mode = null, step = 0, nextT = 0;
-  let muted = false;
+  let muted = false, volume = 1;
   try { muted = localStorage.getItem("sdm-muted") === "1"; } catch (e) {}
+  try {
+    const stored = localStorage.getItem("sdm-volume");
+    if (stored !== null && stored.trim() !== "" && Number.isFinite(Number(stored))) {
+      volume = Math.max(0, Math.min(1, Number(stored)));
+    }
+  } catch (e) {}
   const THIRDS = [1.189, 1.26, 1.26, 1.26];
   const MODES = {
     menu:   { bpm:84,  roots:[55,43.65,65.41,49] },
@@ -517,7 +534,7 @@ const Sound = (() => {
     if (!AC) return false;
     ctx = new AC();
     const comp = ctx.createDynamicsCompressor();
-    master = ctx.createGain(); master.gain.value = muted ? 0 : .9;
+    master = ctx.createGain(); master.gain.value = muted ? 0 : .9 * volume;
     master.connect(comp); comp.connect(ctx.destination);
     sfx = ctx.createGain(); sfx.gain.value = .8; sfx.connect(master);
     musicBus = ctx.createGain(); musicBus.gain.value = .3; musicBus.connect(master);
@@ -597,12 +614,18 @@ const Sound = (() => {
   function setMuted(v){
     muted = v;
     try { localStorage.setItem("sdm-muted", v ? "1" : "0"); } catch (e) {}
-    if (ctx) master.gain.setTargetAtTime(v ? 0 : .9, now(), .05);
+    if (ctx) master.gain.setTargetAtTime(v ? 0 : .9 * volume, now(), .05);
+  }
+  function setVolume(v){
+    if (!Number.isFinite(v)) return;
+    volume = Math.max(0, Math.min(1, v));
+    try { localStorage.setItem("sdm-volume", String(volume)); } catch (e) {}
+    setMuted(false);
   }
   const fx = fn => (...a) => { if (ready() && !muted) fn(now(), ...a); };
 
   return {
-    unlock, music, duck, setMuted, isMuted: () => muted,
+    unlock, music, duck, setMuted, setVolume, getVolume: () => volume, isMuted: () => muted || volume === 0,
     click:   fx(t => tone(880, .06, {type:"square", vol:.06})),
     select:  fx(t => { tone(660, .08, {type:"triangle", vol:.22}); tone(990, .14, {type:"triangle", vol:.2, at:t+.07}); }),
     newQ:    fx(t => { noise(.4, {freq:400, to:3200, vol:.1, attack:.15}); tone(523.25, .18, {type:"triangle", vol:.12, at:t+.3}); tone(783.99, .3, {type:"triangle", vol:.12, at:t+.4}); }),
@@ -995,6 +1018,12 @@ function goHome(){
 
 function syncSound(){
   const m = Sound.isMuted();
+  const percent = Math.round(Sound.getVolume() * 100);
+  document.querySelectorAll(".volume-slider").forEach(input => {
+    input.value = percent;
+    input.setAttribute("aria-valuetext", `${percent}%`);
+  });
+  document.querySelectorAll("[data-volume-value]").forEach(output => output.value = `${percent}%`);
   $("btnSound").innerHTML = m ? SPEAKER_OFF : SPEAKER_ON;
   $("btnSoundHome").innerHTML = (m ? SPEAKER_OFF : SPEAKER_ON) + `<span>${m ? "Som desligado" : "Som ligado"}</span>`;
   document.querySelectorAll(".sound-toggle").forEach(b => {
@@ -1004,9 +1033,15 @@ function syncSound(){
 }
 document.querySelectorAll(".sound-toggle").forEach(b => b.addEventListener("click", () => {
   Sound.unlock();
-  Sound.setMuted(!Sound.isMuted());
+  if (Sound.getVolume() === 0) Sound.setVolume(1);
+  else Sound.setMuted(!Sound.isMuted());
   syncSound();
   Sound.click();
+}));
+document.querySelectorAll(".volume-slider").forEach(input => input.addEventListener("input", () => {
+  Sound.unlock();
+  Sound.setVolume(Number(input.value) / 100);
+  syncSound();
 }));
 
 document.addEventListener("pointerdown", Sound.unlock, { once:true });
@@ -1026,6 +1061,7 @@ $("hSkip").addEventListener("click", useSkip);
 $("hStop").addEventListener("click", useStop);
 
 document.addEventListener("keydown", e => {
+  if (e.target.matches("input, textarea, select, [contenteditable]")) return;
   if (document.querySelector(".overlay.show") || !S.q) return;
   const k = e.key.toUpperCase();
   const idx = LETTERS.indexOf(k) >= 0 ? LETTERS.indexOf(k) : ["1","2","3","4"].indexOf(k);
