@@ -216,6 +216,50 @@
   .student small{display:block;font-size:11px;color:var(--light);margin-bottom:8px}
   .student .pick{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--gold);color:var(--black);border:2px solid #000;font-family:var(--display);font-weight:800;font-size:20px}
 
+  /* ---------- CONTROLES DO TOPO ---------- */
+  .top-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .icon-btn{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:var(--graphite);border:var(--ink);box-shadow:0 4px 0 #000;transition:transform .1s,background .2s;color:var(--white)}
+  .icon-btn:hover{transform:translateY(-2px);background:#444}
+  .icon-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #000}
+  .icon-btn svg{width:22px;height:22px}
+  .icon-btn[aria-pressed="false"]{color:var(--gold)}
+
+  /* ---------- HOME / EDIÇÕES ---------- */
+  .panel.home{width:min(960px,100%);padding:34px 28px 28px}
+  .home .title-sub{margin:14px 0 10px}
+  .home-desc{max-width:520px;margin:0 auto 26px}
+  .ed-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--graphite)}
+  .ed-head h3{font-family:var(--display);font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px}
+  .ed-head h3::before{content:"";width:10px;height:10px;background:var(--gold);transform:rotate(45deg);border:2px solid #000}
+  .sound-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--graphite);border:var(--ink);box-shadow:0 3px 0 #000;font-size:12px;font-weight:700;letter-spacing:.06em}
+  .sound-pill svg{width:16px;height:16px;color:var(--gold)}
+  .editions{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;text-align:left}
+  .edition{position:relative;display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:20px;background:linear-gradient(180deg,#2c2c2c,#1a1a1a);border:var(--ink);box-shadow:0 6px 0 #000,0 0 0 3px var(--gold),0 0 0 6px #000;transition:transform .15s,box-shadow .15s;overflow:hidden}
+  .edition::before{content:"";position:absolute;top:-60px;right:-60px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(245,196,0,.28),transparent 70%);pointer-events:none}
+  .edition:hover{transform:translateY(-4px)}
+  .ed-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .ed-num{font-family:var(--display);font-weight:800;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--light)}
+  .ed-status{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--gold);color:var(--black);border:2px solid #000}
+  .ed-icon{width:58px;height:58px;display:grid;place-items:center;border-radius:16px;background:var(--gold);color:var(--black);border:var(--ink);box-shadow:0 4px 0 #000;margin-top:4px}
+  .ed-icon svg{width:30px;height:30px}
+  .edition h4{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.15}
+  .ed-org{font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+  .ed-desc{font-size:14px;line-height:1.5;color:var(--light);text-wrap:pretty;flex:1}
+  .ed-meta{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 6px}
+  .ed-meta li{background:var(--black);border:2px solid #000;outline:1px solid var(--graphite);border-radius:12px;padding:8px;text-align:center;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--light)}
+  .ed-meta b{display:block;font-family:var(--display);font-size:18px;color:var(--white);letter-spacing:0}
+  .edition .btn{width:100%}
+  .edition.soon{background:repeating-linear-gradient(135deg,#1c1c1c 0 12px,#202020 12px 24px);box-shadow:0 6px 0 #000;border-style:dashed;border-color:#555}
+  .edition.soon::before{display:none}
+  .edition.soon:hover{transform:none}
+  .edition.soon .ed-status{background:var(--light)}
+  .edition.soon .ed-icon{background:var(--graphite);color:var(--light)}
+  .edition.soon h4{color:var(--light)}
+  .edition.soon .btn{background:var(--graphite);color:var(--light);cursor:not-allowed;box-shadow:0 3px 0 #000}
+  .edition.soon .btn:hover{transform:none}
+  .home-foot{margin-top:18px;font-size:12px;color:var(--light);opacity:.7}
+  .end-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+
   /* ---------- RESPONSIVO ---------- */
   @media (max-width:960px){
     main.board{grid-template-columns:1fr}
@@ -249,13 +293,19 @@
         <img class="logo" src="./img/logo.png" alt="Logo GALAPOS" />
         <div class="brand-text">
           <strong>GALAPOS</strong>
-          <small>Show do Milhão · Subvenção</small>
+          <small id="brandSub">Show do Milhão</small>
         </div>
       </div>
-      <div class="scores" aria-live="polite">
-        <div class="chip hit"><span>Acertar</span><b id="sHit">R$ 1 mil</b></div>
-        <div class="chip"><span>Parar</span><b id="sStop">R$ 0</b></div>
-        <div class="chip miss"><span>Errar</span><b id="sMiss">R$ 0</b></div>
+      <div class="top-right">
+        <div class="scores" aria-live="polite">
+          <div class="chip hit"><span>Acertar</span><b id="sHit">R$ 1 mil</b></div>
+          <div class="chip"><span>Parar</span><b id="sStop">R$ 0</b></div>
+          <div class="chip miss"><span>Errar</span><b id="sMiss">R$ 0</b></div>
+        </div>
+        <button class="icon-btn sound-toggle" id="btnSound" aria-pressed="true" aria-label="Som ligado"></button>
+        <button class="icon-btn" id="btnHomeTop" aria-label="Voltar às edições">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </button>
       </div>
     </header>
 
@@ -333,19 +383,20 @@
     </main>
   </div>
 
-  <!-- INTRO -->
-  <div class="overlay show" id="ovIntro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
-    <div class="panel">
+  <!-- HOME / EDIÇÕES -->
+  <div class="overlay show" id="ovHome" role="dialog" aria-modal="true" aria-labelledby="homeTitle">
+    <div class="panel home">
       <img class="hero-logo" src="./img/logo.png" alt="Logo GALAPOS" />
       <span class="kicker">GALAPOS apresenta</span>
-      <h2 class="title" id="introTitle">Show do <span class="g">Milhão</span></h2>
-      <div class="title-sub">Edição Subvenção Econômica · FINEP</div>
-      <div class="rules">
-        <div><b>16</b><span>perguntas sobre PD&amp;I, FINEP e elaboração de propostas.</span></div>
-        <div><b>60s</b><span>por pergunta. Leia com atenção antes de confirmar.</span></div>
-        <div><b>4</b><span>ajudas: cartas, especialistas, plateia e pular (3x).</span></div>
+      <h2 class="title" id="homeTitle">Show do <span class="g">Milhão</span></h2>
+      <div class="title-sub">Quiz corporativo de alto valor</div>
+      <p class="desc home-desc">Escolha uma edição e prove seu conhecimento em 16 rodadas rumo ao <strong>prêmio máximo</strong>.</p>
+      <div class="ed-head">
+        <h3>Edições</h3>
+        <button class="sound-pill sound-toggle" id="btnSoundHome" aria-pressed="true" aria-label="Som ligado"></button>
       </div>
-      <button class="btn gold xl" id="btnStart">Começar o jogo</button>
+      <div class="editions" id="editions"></div>
+      <p class="home-foot">Novas edições temáticas serão adicionadas em breve.</p>
     </div>
   </div>
 
@@ -361,7 +412,10 @@
         <div><b id="stHits">0</b><span>Acertos</span></div>
         <div><b id="stHelps">0</b><span>Ajudas usadas</span></div>
       </div>
-      <button class="btn gold xl" id="btnRestart">Jogar novamente</button>
+      <div class="end-actions">
+        <button class="btn ghost xl" id="btnEndHome">Ver edições</button>
+        <button class="btn gold xl" id="btnRestart">Jogar novamente</button>
+      </div>
     </div>
   </div>
 
@@ -377,7 +431,7 @@
   </div>
 
 <script>
-const QUESTIONS = [
+const Q_SUBVENCAO = [
   {t:"Conceito e Legislação",q:"Qual é a definição e finalidade da Subvenção Econômica segundo a legislação brasileira (Lei 10.973/2004 e Lei 11.196/2005)?",o:["Financiamento bancário reembolsável com juros reduzidos para capital de giro.","Instrumento governamental de apoio que oferece recursos públicos não reembolsáveis para empresas investirem em PD&I, compartilhando custos e riscos.","Isenção fiscal permanente de impostos estaduais para empresas exportadoras.","Subsídio direto para contratação de mão de obra não qualificada."],a:1,e:"A Subvenção Econômica (Lei nº 10.973/2004 e Lei nº 11.196/2005) é um instrumento de apoio que concede recursos não reembolsáveis para compartilhar custos e riscos de projetos de PD&I em empresas brasileiras."},
   {t:"Aderência Temática",q:"O que acontece com uma proposta caso os analistas da FINEP considerem que ela não possui aderência à linha temática do edital?",o:["O projeto é automaticamente inabilitado, sem sequer seguir para a análise de mérito.","O projeto recebe nota mínima apenas no quesito de mercado, mas continua sendo avaliado.","A empresa é convidada a trocar de edital sem perder o prazo.","A FINEP readequa o projeto para outra linha temática de forma autônoma."],a:0,e:"A aderência à linha temática e às políticas públicas é o critério essencial de habilitação. Se a proposta não for considerada aderente, ela é inabilitada e nem segue para a análise de mérito."},
   {t:"Objetivo Geral",q:"Quais são os três elementos indispensáveis que devem compor a redação do Objetivo Geral de uma proposta de subvenção?",o:["Histórico da empresa, orçamento detalhado e lista de fornecedores.","Aplicação/finalidade (O quê?), tecnologias utilizadas (Como?) e resultados/impactos esperados (Por quê?).","Plano de marketing, cotações financeiras e currículo dos diretores.","Localização da fábrica, cronograma de desembolso e faturamento dos últimos 3 anos."],a:1,e:"O Objetivo Geral deve explicitar a finalidade ou aplicação (O quê?), as tecnologias utilizadas (Como?) e os resultados ou impactos esperados (Por quê?)."},
@@ -400,6 +454,172 @@ const QUESTIONS = [
   {t:"Resultados e Impactos",q:"Além do impacto econômico direto na empresa proponente, como devem ser apresentados os Impactos Sociais e Ambientais da proposta?",o:["Limitando-se a citar o ganho de margem de lucro interna da diretoria.","Demonstrando benefícios amplos para a sociedade e cadeia produtiva, como geração de empregos qualificados, redução de pegada ambiental, sustentabilidade e eficiência energética.","Ignorando os impactos ambientais por não serem avaliados no edital.","Apresentando apenas os impostos recolhidos no município sem detalhar externalidades."],a:1,e:"Os impactos devem extrapolar o ambiente interno da empresa, demonstrando externalidades positivas para a sociedade (saúde, emprego qualificado, habitação) e sustentabilidade ambiental (redução de emissões, matriz limpa, economia circular)."}
 ];
 
+/* ---------- EDIÇÕES ----------
+   Para adicionar uma nova edição, crie um array de perguntas (mín. 16, ideal 19+)
+   e inclua um objeto em EDITIONS. */
+const ICONS = {
+  coin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15 9.2c-.6-1-1.7-1.6-3-1.6-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.2-3 2.2-1.3 0-2.5-.6-3-1.6M12 6v1.6M12 16.6V18"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'
+};
+const EDITIONS = [
+  { id:"subvencao", name:"Subvenção Econômica", org:"FINEP", short:"Subvenção", icon:ICONS.coin,
+    desc:"PD&I, legislação, TRL, análise de mérito e boas práticas na elaboração de propostas de subvenção.",
+    questions:Q_SUBVENCAO }
+];
+let EDITION = EDITIONS[0];
+
+/* ---------- ÁUDIO (sintetizado com Web Audio API) ---------- */
+const Sound = (() => {
+  let ctx = null, master, sfx, musicBus, noiseBuf, timer = null, mode = null, step = 0, nextT = 0;
+  let muted = false;
+  try { muted = localStorage.getItem("sdm-muted") === "1"; } catch (e) {}
+  const THIRDS = [1.189, 1.26, 1.26, 1.26];
+  const MODES = {
+    menu:   { bpm:84,  roots:[55,43.65,65.41,49] },
+    game:   { bpm:112, roots:[55,43.65,65.41,49] },
+    tension:{ bpm:132, roots:[55,58.27,55,51.91] }
+  };
+
+  function init(){
+    if (ctx) return true;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    ctx = new AC();
+    const comp = ctx.createDynamicsCompressor();
+    master = ctx.createGain(); master.gain.value = muted ? 0 : .9;
+    master.connect(comp); comp.connect(ctx.destination);
+    sfx = ctx.createGain(); sfx.gain.value = .8; sfx.connect(master);
+    musicBus = ctx.createGain(); musicBus.gain.value = .3; musicBus.connect(master);
+    noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1;
+    return true;
+  }
+  const now = () => ctx.currentTime;
+  const ready = () => ctx && ctx.state === "running";
+
+  function tone(f, dur, o = {}){
+    if (!ctx) return;
+    const t = o.at ?? now();
+    const osc = ctx.createOscillator(), g = ctx.createGain();
+    osc.type = o.type || "sine";
+    osc.frequency.setValueAtTime(f, t);
+    if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + dur);
+    const v = o.vol ?? .3, a = o.attack ?? .01;
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(v, t + a);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    osc.connect(g); g.connect(o.bus || sfx);
+    osc.start(t); osc.stop(t + dur + .05);
+  }
+  function noise(dur, o = {}){
+    if (!ctx) return;
+    const t = o.at ?? now();
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+    const f = ctx.createBiquadFilter();
+    f.type = o.filter || "bandpass"; f.Q.value = o.q ?? 1;
+    f.frequency.setValueAtTime(o.freq || 1000, t);
+    if (o.to) f.frequency.exponentialRampToValueAtTime(o.to, t + dur);
+    const g = ctx.createGain(), v = o.vol ?? .2, a = o.attack ?? .005;
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(v, t + a);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    src.connect(f); f.connect(g); g.connect(o.bus || sfx);
+    src.start(t, Math.random()*.5); src.stop(t + dur + .05);
+  }
+
+  function playStep(s, t){
+    const m = MODES[mode], beat = 60/m.bpm/2;
+    const bar = Math.floor(s/8) % 4, st = s % 8, root = m.roots[bar], third = THIRDS[bar];
+    const M = { bus:musicBus, at:t };
+    if (st === 0) [1, third, 1.498].forEach(r => tone(root*4*r, beat*8, {...M, type:"triangle", vol:mode==="menu"?.07:.045, attack:.4}));
+    if (mode === "menu"){
+      if (st % 2 === 0) tone(root*8*[1,third,1.498,2][(st/2)%4], .9, {...M, vol:.05});
+      if (st === 0) tone(root*2, beat*7, {...M, type:"sine", vol:.12, attack:.2});
+      return;
+    }
+    if ([0,3,4,6].includes(st)) tone(root*2, beat*.9, {...M, type:"triangle", vol:.2});
+    const kick = mode === "tension" ? st % 2 === 0 : st % 4 === 0;
+    if (kick) tone(130, .22, {...M, to:42, vol:.4});
+    if (st === 2 || st === 6) noise(.12, {...M, freq:1800, q:.6, vol:.06});
+    noise(.04, {...M, filter:"highpass", freq:7000, vol: st % 2 ? .025 : .045});
+    if (mode === "tension") tone(root*8, beat*.5, {...M, type:"square", vol:.018});
+  }
+  function scheduler(){
+    const beat = 60/MODES[mode].bpm/2;
+    while (nextT < now() + .15){ playStep(step, nextT); nextT += beat; step++; }
+  }
+  function music(m){
+    if (m === mode && timer) return;
+    mode = m;
+    clearInterval(timer); timer = null;
+    if (!m || !ready()) return;
+    step = 0; nextT = now() + .05;
+    timer = setInterval(scheduler, 40);
+  }
+  function unlock(){
+    if (!init()) return;
+    const go = () => { if (mode && !timer) music(mode); };
+    if (ctx.state === "suspended") ctx.resume().then(go); else go();
+  }
+  function duck(on){ if (ctx) musicBus.gain.setTargetAtTime(on ? .06 : .3, now(), .15); }
+  function setMuted(v){
+    muted = v;
+    try { localStorage.setItem("sdm-muted", v ? "1" : "0"); } catch (e) {}
+    if (ctx) master.gain.setTargetAtTime(v ? 0 : .9, now(), .05);
+  }
+  const fx = fn => (...a) => { if (ready() && !muted) fn(now(), ...a); };
+
+  return {
+    unlock, music, duck, setMuted, isMuted: () => muted,
+    click:   fx(t => tone(880, .06, {type:"square", vol:.06})),
+    select:  fx(t => { tone(660, .08, {type:"triangle", vol:.22}); tone(990, .14, {type:"triangle", vol:.2, at:t+.07}); }),
+    newQ:    fx(t => { noise(.4, {freq:400, to:3200, vol:.1, attack:.15}); tone(523.25, .18, {type:"triangle", vol:.12, at:t+.3}); tone(783.99, .3, {type:"triangle", vol:.12, at:t+.4}); }),
+    suspense:fx(t => {
+      for (let i = 0; i < 28; i++) noise(.06, {filter:"lowpass", freq:320, q:.8, vol:.1 + i*.008, at:t + i*.056});
+      tone(110, 1.6, {to:440, type:"sawtooth", vol:.05, attack:1.2});
+      tone(55, 1.6, {type:"sine", vol:.2, attack:1});
+    }),
+    correct: fx(t => {
+      [523.25,659.25,783.99,1046.5].forEach((f,i) => tone(f, .35, {type:"square", vol:.12, at:t+i*.09}));
+      [523.25,659.25,783.99,1046.5].forEach(f => tone(f, 1.2, {type:"triangle", vol:.12, at:t+.38, attack:.02}));
+      noise(1.2, {filter:"highpass", freq:6000, vol:.08, at:t+.38});
+    }),
+    wrong:   fx(t => {
+      tone(233, .32, {type:"sawtooth", vol:.16}); tone(220, .32, {type:"sawtooth", vol:.16});
+      tone(165, .7, {type:"sawtooth", vol:.18, to:98, at:t+.34});
+      noise(.5, {filter:"lowpass", freq:300, vol:.15, at:t+.34});
+    }),
+    tick:    fx((t, urgent) => tone(urgent ? 1600 : 1200, .05, {type:"square", vol: urgent ? .09 : .05})),
+    help:    fx(t => { noise(.5, {freq:300, to:3500, vol:.14, attack:.2}); tone(880, .2, {vol:.1, at:t+.35}); tone(1318.5, .35, {vol:.1, at:t+.45}); }),
+    flip:    fx(t => { noise(.12, {freq:2600, vol:.14}); tone(700, .12, {to:1400, type:"triangle", vol:.1}); }),
+    reveal:  fx(t => [784,988,1175].forEach((f,i) => tone(f, .4, {vol:.12, at:t+i*.08}))),
+    chime:   fx(t => [880,1108.7,1318.5].forEach((f,i) => tone(f, .7, {vol:.12, at:t+i*.18}))),
+    crowd:   fx(t => {
+      noise(1.8, {freq:700, q:.4, vol:.1, attack:.5});
+      for (let i = 0; i < 26; i++) noise(.04, {filter:"highpass", freq:1500, vol:.05 + Math.random()*.06, at:t + .2 + Math.random()*1.4});
+    }),
+    start:   fx(t => {
+      tone(220, .6, {to:880, type:"sawtooth", vol:.07});
+      [440,554.4,659.3,880].forEach(f => tone(f, 1.1, {type:"triangle", vol:.11, at:t+.5}));
+      noise(1.4, {filter:"highpass", freq:5000, vol:.1, at:t+.5});
+      tone(65, .5, {to:40, vol:.4, at:t+.5});
+    }),
+    cash:    fx(t => { noise(.08, {freq:3000, vol:.18}); [1568,2093].forEach((f,i) => tone(f, .5, {vol:.14, at:t+.06+i*.08})); }),
+    win:     fx(t => {
+      [392,523.25,659.25,783.99].forEach((f,i) => tone(f, .22, {type:"square", vol:.12, at:t+i*.16}));
+      [523.25,659.25,783.99,1046.5].forEach(f => tone(f, 2, {type:"triangle", vol:.12, at:t+.7}));
+      tone(65, .6, {to:40, vol:.4, at:t+.7});
+      noise(2, {filter:"highpass", freq:5000, vol:.12, at:t+.7});
+      for (let i = 0; i < 40; i++) noise(.04, {filter:"highpass", freq:1500, vol:.05 + Math.random()*.06, at:t + .8 + Math.random()*2});
+    }),
+    lose:    fx(t => [[392,370],[370,349],[349,330],[330,247]].forEach(([a,b],i) => tone(a, i === 3 ? .9 : .42, {to:b, type:"sawtooth", vol:.1, at:t+i*.45})))
+  };
+})();
+
+const SPEAKER_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+const SPEAKER_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+
 /* 16 rodadas + até 3 reservas para a ajuda "Pular" (20 perguntas no total) */
 const ROUNDS = 16;
 const PRIZES = [1e3,2e3,3e3,4e3,5e3,10e3,20e3,30e3,40e3,50e3,100e3,200e3,300e3,400e3,500e3,1e6];
@@ -419,7 +639,9 @@ function prepareQuestion(raw){
 }
 
 function newGame(){
-  const deck = shuffle(QUESTIONS).map(prepareQuestion);
+  $("brandSub").textContent = `Show do Milhão · ${EDITION.short}`;
+  document.title = `Show do Milhão GALAPOS — ${EDITION.name}`;
+  const deck = shuffle(EDITION.questions).map(prepareQuestion);
   S = { deck, pool: deck.slice(ROUNDS), round:0, q:null, picked:null, locked:false, skips:3, used:{cards:false,uni:false,aud:false}, helpsUsed:0, timer:null, left:TIME, eliminated:[] };
   S.deck = deck.slice(0, ROUNDS);
   ["hCards","hUni","hAud","hSkip","hStop"].forEach(id => $(id).disabled = false);
@@ -471,6 +693,9 @@ function loadRound(){
   $("hSkip").disabled = S.skips === 0 || S.round === PRIZES.length-1;
   setHelpsLocked(false);
   updateHud();
+  Sound.duck(false);
+  Sound.music(S.round === PRIZES.length-1 ? "tension" : "game");
+  Sound.newQ();
   startTimer();
 }
 
@@ -488,8 +713,12 @@ function startTimer(){
   const circ = 2*Math.PI*27;
   const prog = $("timerProg");
   prog.style.strokeDasharray = circ;
+  let lastSec = Math.ceil(S.left);
   const tick = () => {
-    $("timerNum").textContent = Math.ceil(S.left);
+    const sec = Math.ceil(S.left);
+    if (sec !== lastSec && sec <= 10 && sec > 0) Sound.tick(sec <= 5);
+    lastSec = sec;
+    $("timerNum").textContent = sec;
     prog.style.strokeDashoffset = circ * (1 - S.left/TIME);
     $("timer").classList.toggle("low", S.left <= 10);
   };
@@ -508,6 +737,7 @@ function resumeTimer(){
 function pick(i){
   if (S.locked || S.eliminated.includes(i)) return;
   S.picked = i;
+  Sound.select();
   document.querySelectorAll(".ans").forEach(b => b.classList.toggle("selected", +b.dataset.i === i));
   $("confirmLetter").textContent = LETTERS[i];
   $("confirm").classList.add("show");
@@ -532,6 +762,7 @@ function confirmPick(){
   $("confirm").classList.remove("show");
   const btn = document.querySelector(`.ans[data-i="${S.picked}"]`);
   btn.classList.remove("selected"); btn.classList.add("suspense");
+  Sound.duck(true); Sound.suspense();
   setTimeout(() => {
     btn.classList.remove("suspense");
     reveal(S.picked === S.q.a);
@@ -541,6 +772,8 @@ function confirmPick(){
 function reveal(correct, timedOut){
   const right = document.querySelector(`.ans[data-i="${S.q.a}"]`);
   right.classList.add("correct");
+  Sound.duck(true);
+  correct ? Sound.correct() : Sound.wrong();
   if (!correct && S.picked !== null) document.querySelector(`.ans[data-i="${S.picked}"]`).classList.add("wrong");
   const fb = $("feedback");
   fb.classList.remove("ok","bad");
@@ -578,6 +811,10 @@ function endGame(kind){
   if (kind === "win"){ prize = PRIZES.at(-1); kicker="Campeão absoluto"; title="Você ganhou o milhão!"; desc="Domínio total de <strong>Subvenção Econômica</strong>. Sua próxima proposta para a FINEP está em ótimas mãos."; }
   else if (kind === "stop"){ prize = stopValue(); kicker="Decisão estratégica"; title="Você parou o jogo"; desc="Saber a hora de parar também é estratégia. Revise os tópicos e volte para buscar o <strong>milhão</strong>."; }
   else { prize = missValue(); kicker="Fim de jogo"; title="Não foi dessa vez"; desc="Cada erro é uma oportunidade de aprendizado. Revise a explicação e tente novamente para chegar ao <strong>milhão</strong>."; }
+  Sound.music(null); Sound.duck(false);
+  ({win:Sound.win, stop:Sound.cash, lose:Sound.lose})[kind]();
+  setTimeout(() => { if ($("ovEnd").classList.contains("show")) Sound.music("menu"); }, kind === "win" ? 3200 : 2000);
+  if (kind === "win") desc = `Domínio total de <strong>${EDITION.name}</strong>. Você está pronto para o próximo desafio.`;
   $("endIcon").innerHTML = kind === "lose" ? flag : trophy;
   $("endIcon").classList.toggle("lose", kind === "lose");
   $("endKicker").textContent = kicker;
@@ -593,6 +830,7 @@ function endGame(kind){
 /* ---------- AJUDAS ---------- */
 function openHelp(kicker, title, desc, body){
   pauseTimer(); cancelPick();
+  Sound.help(); Sound.duck(true);
   $("helpKicker").textContent = kicker;
   $("helpTitle").textContent = title;
   $("helpDesc").textContent = desc;
@@ -601,6 +839,7 @@ function openHelp(kicker, title, desc, body){
 }
 function closeHelp(){
   $("ovHelp").classList.remove("show");
+  Sound.click(); Sound.duck(false);
   if (!S.locked) resumeTimer();
 }
 
@@ -624,9 +863,11 @@ function useCards(){
   document.querySelectorAll(".card").forEach(c => c.addEventListener("click", () => {
     if (document.querySelector(".card.flip")) return;
     c.classList.add("flip");
+    Sound.flip();
     document.querySelectorAll(".card").forEach(o => { if (o!==c) o.setAttribute("disabled",""); });
     const n = +c.dataset.v;
     setTimeout(() => {
+      Sound.reveal();
       document.querySelectorAll(".card").forEach(o => o.classList.add("flip"));
       const removed = eliminate(n);
       $("helpDesc").textContent = removed ? `${removed} alternativa${removed>1?"s":""} errada${removed>1?"s":""} eliminada${removed>1?"s":""}!` : "Que azar! Nenhuma alternativa eliminada.";
@@ -646,6 +887,7 @@ function useUni(){
   const user = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg>';
   const html = `<div class="students">${people.map(([n,r])=>`<div class="student"><div class="avatar">${user}</div><b>${n}</b><small>${r}</small><span class="pick">${LETTERS[smartGuess(.72)]}</span></div>`).join("")}</div>`;
   openHelp("Ajuda · Especialistas","Opinião dos especialistas","Três consultores dão o palpite deles. A decisão final é sua.",html);
+  setTimeout(Sound.chime, 250);
 }
 
 function useAud(){
@@ -659,6 +901,7 @@ function useAud(){
   const lead = pct.indexOf(Math.max(...pct));
   const html = `<div class="bars">${pct.map((p,i)=>`<div class="bar ${i===lead?"lead":""}"><span>${p}%</span><div class="fill" data-h="${p}"></div></div>`).join("")}</div><div class="bar-labels">${LETTERS.map(l=>`<b>${l}</b>`).join("")}</div>`;
   openHelp("Ajuda · Plateia","A plateia votou","Veja como o auditório respondeu a esta pergunta.",html);
+  Sound.crowd();
   requestAnimationFrame(() => setTimeout(() => document.querySelectorAll(".bar .fill").forEach(f => f.style.height = `${Math.max(2,f.dataset.h)*1.6}px`), 60));
 }
 
@@ -676,10 +919,73 @@ function useStop(){
 }
 
 /* ---------- EVENTOS ---------- */
-$("btnStart").addEventListener("click", () => { $("ovIntro").classList.remove("show"); newGame(); });
-$("btnRestart").addEventListener("click", () => { $("ovEnd").classList.remove("show"); newGame(); });
+function renderHome(){
+  const playable = EDITIONS.map((ed, i) => `
+    <article class="edition">
+      <div class="ed-top"><span class="ed-num">Edição ${String(i+1).padStart(2,"0")}</span><span class="ed-status">Disponível</span></div>
+      <div class="ed-icon">${ed.icon}</div>
+      <div><h4>${ed.name}</h4><p class="ed-org">${ed.org}</p></div>
+      <p class="ed-desc">${ed.desc}</p>
+      <ul class="ed-meta">
+        <li><b>${ed.questions.length}</b>perguntas</li>
+        <li><b>60s</b>por rodada</li>
+        <li><b>4</b>ajudas</li>
+      </ul>
+      <button class="btn gold" data-ed="${ed.id}">Jogar esta edição</button>
+    </article>`).join("");
+  const soon = `
+    <article class="edition soon" aria-label="Nova edição em breve">
+      <div class="ed-top"><span class="ed-num">Edição ${String(EDITIONS.length+1).padStart(2,"0")}</span><span class="ed-status">Em breve</span></div>
+      <div class="ed-icon">${ICONS.lock}</div>
+      <div><h4>Nova edição</h4><p class="ed-org">Em preparação</p></div>
+      <p class="ed-desc">Novos temas estão sendo preparados pela GALAPOS. Fique de olho nas próximas temporadas.</p>
+      <button class="btn" disabled>Em breve</button>
+    </article>`;
+  $("editions").innerHTML = playable + soon;
+  document.querySelectorAll("[data-ed]").forEach(b => b.addEventListener("click", () => startEdition(b.dataset.ed)));
+}
+
+function startEdition(id){
+  EDITION = EDITIONS.find(e => e.id === id) || EDITIONS[0];
+  Sound.unlock();
+  Sound.start();
+  $("ovHome").classList.remove("show");
+  setTimeout(newGame, 600);
+}
+
+function goHome(){
+  pauseTimer();
+  if (S.q) lockAnswers();
+  S.q = null;
+  ["ovEnd","ovHelp"].forEach(id => $(id).classList.remove("show"));
+  $("ovHome").classList.add("show");
+  Sound.click(); Sound.duck(false); Sound.music("menu");
+}
+
+function syncSound(){
+  const m = Sound.isMuted();
+  $("btnSound").innerHTML = m ? SPEAKER_OFF : SPEAKER_ON;
+  $("btnSoundHome").innerHTML = (m ? SPEAKER_OFF : SPEAKER_ON) + `<span>${m ? "Som desligado" : "Som ligado"}</span>`;
+  document.querySelectorAll(".sound-toggle").forEach(b => {
+    b.setAttribute("aria-pressed", String(!m));
+    b.setAttribute("aria-label", m ? "Ligar som" : "Desligar som");
+  });
+}
+document.querySelectorAll(".sound-toggle").forEach(b => b.addEventListener("click", () => {
+  Sound.unlock();
+  Sound.setMuted(!Sound.isMuted());
+  syncSound();
+  Sound.click();
+}));
+
+document.addEventListener("pointerdown", Sound.unlock, { once:true });
+document.addEventListener("keydown", Sound.unlock, { once:true });
+
+$("btnRestart").addEventListener("click", () => { $("ovEnd").classList.remove("show"); Sound.start(); setTimeout(newGame, 600); });
+$("btnEndHome").addEventListener("click", goHome);
+$("btnHomeTop").addEventListener("click", goHome);
 $("btnConfirm").addEventListener("click", confirmPick);
-$("btnCancel").addEventListener("click", cancelPick);
+$("btnCancel").addEventListener("click", () => { Sound.click(); cancelPick(); });
 $("btnNext").addEventListener("click", next);
 $("btnHelpClose").addEventListener("click", closeHelp);
 $("hCards").addEventListener("click", useCards);
@@ -698,6 +1004,9 @@ document.addEventListener("keydown", e => {
 
 buildBulbs();
 buildLadder();
+renderHome();
+syncSound();
+Sound.music("menu");
 </script>
 </body>
 </html>
