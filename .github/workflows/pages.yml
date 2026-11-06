@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "scripts/build-site.mjs"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -25,9 +26,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Generate versioned site assets
+        run: node scripts/build-site.mjs "$RUNNER_TEMP/galapos-pages"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: ${{ runner.temp }}/galapos-pages
       - id: deployment
         uses: actions/deploy-pages@v4
