@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Show do Milhão GALAPOS — Subvenção Econômica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --black:#111111; --white:#FFFFFF; --graphite:#333333; --light:#E8E8E8;
+    --gold:#F5C400; --gold-deep:#C79F00;
+    --danger:#E5484D;
+    --ink:3px solid #000;
+    --pop:0 6px 0 #000;
+    --display:"Sora","Geist",system-ui,sans-serif;
+    --body:"Geist",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--body);color:var(--white);background:var(--black);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+  button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  /* ---------- PALCO ---------- */
+  .stage{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+  .stage::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(232,232,232,.07) 1px,transparent 1.6px);background-size:22px 22px;mask-image:radial-gradient(ellipse at 50% 30%,#000 30%,transparent 80%)}
+  .stage::after{content:"";position:absolute;left:50%;bottom:-28vh;width:140vw;height:60vh;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(245,196,0,.22),rgba(245,196,0,.05) 45%,transparent 70%)}
+  .beam{position:absolute;top:-10vh;width:22vw;min-width:160px;height:130vh;transform-origin:50% 0;background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(245,196,0,.06) 55%,transparent 85%);clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);filter:blur(2px);mix-blend-mode:screen}
+  .beam.b1{left:2%;animation:sway 9s ease-in-out infinite}
+  .beam.b2{left:26%;opacity:.55;animation:sway 11s ease-in-out infinite reverse}
+  .beam.b3{right:26%;opacity:.55;animation:sway 10s ease-in-out infinite}
+  .beam.b4{right:2%;animation:sway 8s ease-in-out infinite reverse}
+  @keyframes sway{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
+  .rig{position:absolute;top:0;left:0;right:0;height:14px;background:var(--graphite);border-bottom:var(--ink);display:flex;justify-content:space-around;align-items:flex-end}
+  .rig span{width:34px;height:22px;margin-bottom:-18px;background:var(--black);border:var(--ink);border-radius:0 0 10px 10px;position:relative}
+  .rig span::after{content:"";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);width:16px;height:8px;border-radius:0 0 8px 8px;background:var(--gold);box-shadow:0 4px 18px 4px rgba(245,196,0,.55)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* ---------- LAYOUT ---------- */
+  .app{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:34px 18px 28px;display:flex;flex-direction:column;gap:18px;min-height:100vh}
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:54px;height:54px;border-radius:50%;background:var(--white);border:var(--ink);box-shadow:0 4px 0 #000,0 0 0 3px var(--gold);object-fit:cover;flex-shrink:0}
+  .brand-text strong{display:block;font-family:var(--display);font-weight:800;letter-spacing:.18em;font-size:18px}
+  .brand-text small{display:block;color:var(--gold);font-weight:600;font-size:11px;letter-spacing:.28em;text-transform:uppercase}
+  .scores{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+  .chip{background:var(--graphite);border:var(--ink);border-radius:14px;padding:8px 14px;box-shadow:0 4px 0 #000;min-width:108px;display:flex;flex-direction:column;gap:2px}
+  .chip span{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--light);font-weight:600}
+  .chip b{font-family:var(--display);font-size:17px;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .chip.hit{background:var(--gold);color:var(--black)}
+  .chip.hit span{color:var(--black)}
+  .chip.miss b{color:var(--light)}
+
+  main.board{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:20px;flex:1}
+  .play{display:flex;flex-direction:column;gap:16px;min-width:0}
+
+  /* ---------- PAINEL DA PERGUNTA ---------- */
+  .frame{position:relative;border-radius:26px;padding:6px;background:linear-gradient(145deg,var(--gold),#fff3a8 30%,var(--gold-deep) 60%,var(--gold));border:var(--ink);box-shadow:var(--pop),0 0 60px rgba(245,196,0,.18)}
+  .frame-inner{position:relative;border-radius:20px;background:radial-gradient(120% 90% at 50% 0%,#2a2a2a 0%,var(--black) 70%);border:var(--ink);padding:36px 34px 30px;overflow:hidden}
+  .frame-inner::before{content:"";position:absolute;inset:10px;border:1px solid rgba(245,196,0,.35);border-radius:14px;pointer-events:none}
+  .corner{position:absolute;width:26px;height:26px;border:3px solid var(--gold);pointer-events:none}
+  .corner.tl{top:16px;left:16px;border-right:0;border-bottom:0;border-radius:8px 0 0 0}
+  .corner.tr{top:16px;right:16px;border-left:0;border-bottom:0;border-radius:0 8px 0 0}
+  .corner.bl{bottom:16px;left:16px;border-right:0;border-top:0;border-radius:0 0 0 8px}
+  .corner.br{bottom:16px;right:16px;border-left:0;border-top:0;border-radius:0 0 8px 0}
+  .bulbs{position:absolute;left:44px;right:44px;display:flex;justify-content:space-between;pointer-events:none}
+  .bulbs.top{top:-1px}.bulbs.bottom{bottom:-1px}
+  .bulbs i{width:9px;height:9px;border-radius:50%;background:#5a4a00;border:2px solid #000;animation:chase 1.2s infinite}
+  .bulbs i:nth-child(3n+2){animation-delay:.4s}.bulbs i:nth-child(3n+3){animation-delay:.8s}
+  @keyframes chase{0%,60%,100%{background:#5a4a00;box-shadow:none}20%{background:var(--gold);box-shadow:0 0 10px 2px rgba(245,196,0,.8)}}
+
+  .q-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .q-meta-left{display:flex;flex-direction:column;gap:8px;min-width:0}
+  .badge{display:inline-flex;align-self:flex-start;align-items:center;gap:8px;background:var(--gold);color:var(--black);border:var(--ink);padding:6px 14px;border-radius:999px;font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.04em;box-shadow:0 3px 0 #000}
+  .topic{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--light);font-weight:600}
+  .topic::before{content:"";display:inline-block;width:8px;height:8px;background:var(--gold);border-radius:2px;margin-right:8px;transform:rotate(45deg) translateY(-1px)}
+  .timer{position:relative;width:64px;height:64px;flex-shrink:0}
+  .timer svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .timer circle{fill:none;stroke-width:6}
+  .timer .track{stroke:var(--graphite)}
+  .timer .prog{stroke:var(--gold);stroke-linecap:round;transition:stroke-dashoffset .1s linear,stroke .2s}
+  .timer.low .prog{stroke:var(--danger)}
+  .timer b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:19px;font-variant-numeric:tabular-nums}
+  .question{font-family:var(--display);font-weight:700;font-size:clamp(18px,2.2vw,26px);line-height:1.35;text-align:center;text-wrap:balance;min-height:3em;display:grid;place-items:center;padding:0 6px}
+  .enter{animation:qIn .5s cubic-bezier(.2,1.4,.4,1)}
+  @keyframes qIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+
+  /* ---------- ALTERNATIVAS ---------- */
+  .answers{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .ans{position:relative;display:flex;align-items:center;gap:14px;text-align:left;min-height:76px;padding:12px 18px 12px 12px;border-radius:18px;background:linear-gradient(180deg,#3d3d3d,var(--graphite));border:var(--ink);box-shadow:var(--pop);transition:transform .12s,box-shadow .12s,background .2s,opacity .3s;font-weight:500;font-size:15px;line-height:1.38}
+  .ans::after{content:"";position:absolute;left:12px;right:12px;top:5px;height:8px;border-radius:9px;background:rgba(255,255,255,.07);pointer-events:none}
+  .ans .letter{width:44px;height:44px;flex-shrink:0;display:grid;place-items:center;border-radius:12px;background:var(--black);color:var(--gold);border:2px solid var(--gold);font-family:var(--display);font-weight:800;font-size:18px}
+  .ans:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 0 #000;background:linear-gradient(180deg,#474747,#383838)}
+  .ans:hover:not(:disabled) .letter{background:var(--gold);color:var(--black);border-color:#000}
+  .ans:active:not(:disabled){transform:translateY(4px);box-shadow:0 2px 0 #000}
+  .ans.selected{background:linear-gradient(180deg,#fff,var(--light));color:var(--black);animation:pulse 1s ease-in-out infinite}
+  .ans.selected .letter{background:var(--gold);color:var(--black);border-color:#000}
+  @keyframes pulse{0%,100%{box-shadow:var(--pop),0 0 0 0 rgba(245,196,0,.55)}50%{box-shadow:var(--pop),0 0 0 8px rgba(245,196,0,0)}}
+  .ans.suspense{animation:blink .28s steps(2) infinite}
+  @keyframes blink{50%{background:var(--gold)}}
+  .ans.correct{background:var(--gold);color:var(--black);animation:win .5s ease 2}
+  .ans.correct .letter{background:var(--black);color:var(--gold);border-color:var(--black)}
+  @keyframes win{50%{transform:scale(1.03)}}
+  .ans.wrong{background:var(--danger);color:var(--white)}
+  .ans.wrong .letter{background:var(--black);color:var(--white);border-color:var(--white)}
+  .ans.out{opacity:.22;text-decoration:line-through}
+  .ans:disabled{cursor:default}
+
+  .confirm,.feedback{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--light);color:var(--black);border:var(--ink);border-radius:18px;padding:12px 14px 12px 20px;box-shadow:var(--pop)}
+  .confirm.show,.feedback.show{display:flex;animation:qIn .35s cubic-bezier(.2,1.4,.4,1)}
+  .confirm p{font-family:var(--display);font-weight:800;font-size:17px}
+  .confirm p em{font-style:normal;background:var(--gold);padding:0 6px;border-radius:6px;border:2px solid #000}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .feedback{align-items:flex-start;padding:16px 16px 16px 20px;background:var(--white)}
+  .feedback.ok{box-shadow:var(--pop),inset 8px 0 0 var(--gold)}
+  .feedback.bad{box-shadow:var(--pop),inset 8px 0 0 var(--danger)}
+  .fb-text{flex:1 1 320px;display:flex;flex-direction:column;gap:6px}
+  .fb-text strong{font-family:var(--display);font-weight:800;font-size:17px}
+  .fb-text p{font-size:14.5px;line-height:1.5;color:var(--graphite);text-wrap:pretty}
+  .fb-text .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--black);background:var(--light);border:2px solid #000;border-radius:6px;padding:2px 8px;align-self:flex-start}
+
+  .btn{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.04em;padding:12px 22px;border-radius:14px;border:var(--ink);box-shadow:0 5px 0 #000;transition:transform .1s,box-shadow .1s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 #000}
+  .btn:active{transform:translateY(4px);box-shadow:0 1px 0 #000}
+  .btn.gold{background:var(--gold);color:var(--black)}
+  .btn.dark{background:var(--black);color:var(--white)}
+  .btn.ghost{background:var(--white);color:var(--black)}
+  .btn.xl{font-size:19px;padding:16px 34px;border-radius:18px}
+  .btn svg{width:18px;height:18px}
+
+  /* ---------- AJUDAS ---------- */
+  .helps{display:flex;gap:12px;flex-wrap:wrap;align-items:stretch}
+  .help{flex:1 1 130px;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:var(--black);border:var(--ink);outline:1px solid var(--graphite);box-shadow:0 5px 0 #000;transition:transform .1s;text-align:left}
+  .help .ico{width:38px;height:38px;flex-shrink:0;display:grid;place-items:center;border-radius:11px;background:var(--gold);color:var(--black);border:2px solid #000}
+  .help .ico svg{width:20px;height:20px}
+  .help b{display:block;font-family:var(--display);font-size:13px;font-weight:700}
+  .help small{display:block;font-size:11px;color:var(--light);opacity:.8}
+  .help:hover:not(:disabled){transform:translateY(-2px);outline-color:var(--gold)}
+  .help:disabled{opacity:.35;cursor:not-allowed;filter:grayscale(1)}
+  .help.stop{background:var(--light);color:var(--black);outline-color:transparent}
+  .help.stop .ico{background:var(--black);color:var(--gold)}
+  .help.stop small{color:var(--graphite)}
+
+  /* ---------- ESCADA ---------- */
+  .ladder{background:linear-gradient(180deg,#1c1c1c,var(--black));border:var(--ink);outline:1px solid var(--graphite);border-radius:22px;padding:14px;box-shadow:var(--pop);display:flex;flex-direction:column;gap:4px;align-self:start}
+  .ladder h2{font-family:var(--display);font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);text-align:center;padding:4px 0 10px;border-bottom:1px dashed var(--graphite);margin-bottom:6px}
+  .ladder ol{list-style:none;display:flex;flex-direction:column-reverse;gap:2px}
+  .ladder li{display:flex;justify-content:space-between;align-items:center;padding:4px 12px;border-radius:10px;font-size:12.5px;color:var(--light);border:2px solid transparent;font-variant-numeric:tabular-nums}
+  .ladder li .n{font-weight:600;opacity:.55;width:24px}
+  .ladder li .v{font-family:var(--display);font-weight:700}
+  .ladder li.safe .v{color:var(--white)}
+  .ladder li.safe .n::after{content:"";display:inline-block;width:6px;height:6px;margin-left:4px;background:var(--gold);border-radius:50%;vertical-align:middle}
+  .ladder li.done{color:#8a8a8a}
+  .ladder li.done .v{color:#8a8a8a}
+  .ladder li.done .v::after{content:" \2713";color:var(--gold)}
+  .ladder li.current{background:var(--gold);color:var(--black);border-color:#000;box-shadow:0 3px 0 #000;transform:scale(1.03)}
+  .ladder li.current .n{opacity:1}
+  .ladder li.current .v{color:var(--black)}
+  .ladder li.top .v{color:var(--gold);font-size:14px}
+  .ladder li.top.current .v{color:var(--black)}
+  .ladder .legend{font-size:11px;color:var(--light);opacity:.7;text-align:center;margin-top:8px;padding-top:8px;border-top:1px dashed var(--graphite)}
+
+  /* ---------- TELAS / MODAIS ---------- */
+  .overlay{position:fixed;inset:0;z-index:10;display:none;place-items:center;padding:18px;background:rgba(17,17,17,.8);backdrop-filter:blur(6px)}
+  .overlay.show{display:grid}
+  .panel{position:relative;width:min(660px,100%);max-height:calc(100vh - 36px);overflow:auto;text-align:center;background:radial-gradient(120% 80% at 50% 0%,#2b2b2b,var(--black) 70%);border:var(--ink);border-radius:26px;padding:36px 28px 30px;box-shadow:0 10px 0 #000,0 0 0 6px var(--gold),0 0 0 9px #000,0 0 90px rgba(245,196,0,.25);animation:pop .45s cubic-bezier(.2,1.5,.4,1)}
+  @keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+  .hero-logo{width:110px;height:110px;margin:0 auto 14px;border-radius:50%;background:var(--white);border:var(--ink);box-shadow:0 6px 0 #000,0 0 0 5px var(--gold),0 0 50px rgba(245,196,0,.45);display:block}
+  .kicker{display:inline-block;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px}
+  .title{font-family:var(--display);font-weight:800;line-height:.95;font-size:clamp(38px,7.5vw,64px);letter-spacing:-.02em}
+  .title .g{color:var(--gold);text-shadow:0 5px 0 #000;-webkit-text-stroke:2px #000;paint-order:stroke fill}
+  .title-sub{display:inline-flex;align-items:center;gap:8px;margin:14px 0 22px;padding:6px 16px;border-radius:999px;background:var(--white);color:var(--black);border:var(--ink);font-weight:800;font-family:var(--display);font-size:12px;letter-spacing:.18em;box-shadow:0 4px 0 #000;text-transform:uppercase}
+  .rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 26px;text-align:left}
+  .rules div{background:var(--graphite);border:var(--ink);border-radius:14px;padding:12px;box-shadow:0 4px 0 #000}
+  .rules b{display:block;font-family:var(--display);color:var(--gold);font-size:20px}
+  .rules span{font-size:12.5px;color:var(--light);line-height:1.4}
+  .trophy{width:96px;height:96px;margin:0 auto 10px;display:grid;place-items:center;border-radius:50%;background:var(--gold);color:var(--black);border:var(--ink);box-shadow:0 6px 0 #000,0 0 40px rgba(245,196,0,.5)}
+  .trophy svg{width:50px;height:50px}
+  .trophy.lose{background:var(--light);box-shadow:0 6px 0 #000}
+  .prize{font-family:var(--display);font-weight:800;font-size:clamp(34px,7vw,52px);color:var(--gold);-webkit-text-stroke:2px #000;paint-order:stroke fill;text-shadow:0 5px 0 #000;margin:8px 0 6px}
+  .desc{color:var(--light);font-size:15px;line-height:1.5;margin-bottom:22px;text-wrap:pretty}
+  .desc strong{color:var(--white)}
+  .modal-title{font-family:var(--display);font-weight:800;font-size:26px;margin-bottom:6px}
+  .stats{display:flex;justify-content:center;gap:10px;margin:0 0 22px;flex-wrap:wrap}
+  .stats div{background:var(--graphite);border:var(--ink);border-radius:14px;padding:10px 16px;box-shadow:0 4px 0 #000;min-width:110px}
+  .stats b{display:block;font-family:var(--display);font-size:22px;color:var(--gold)}
+  .stats span{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--light)}
+
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0 22px;perspective:800px}
+  .card{aspect-ratio:2/3;position:relative;transform-style:preserve-3d;transition:transform .6s}
+  .card.flip{transform:rotateY(180deg)}
+  .card .face{position:absolute;inset:0;border-radius:14px;border:var(--ink);box-shadow:0 5px 0 #000;backface-visibility:hidden;display:grid;place-items:center}
+  .card .back{background:repeating-linear-gradient(45deg,var(--graphite) 0 8px,#2a2a2a 8px 16px)}
+  .card .back img{width:52px;height:52px;border-radius:50%;background:var(--white);border:2px solid #000;box-shadow:0 0 0 3px var(--gold)}
+  .card .front{background:var(--white);color:var(--black);transform:rotateY(180deg);align-content:center;gap:4px}
+  .card .front b{font-family:var(--display);font-size:40px;font-weight:800;line-height:1}
+  .card .front small{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+  .card:hover:not(.flip):not([disabled]){transform:translateY(-6px)}
+
+  .bars{display:flex;justify-content:center;align-items:flex-end;gap:18px;height:200px;margin:24px 0 8px;padding:0 8px;border-bottom:3px solid var(--graphite)}
+  .bar{flex:1;max-width:70px;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+  .bar .fill{width:100%;border:var(--ink);border-bottom:0;border-radius:10px 10px 0 0;background:var(--light);height:0;transition:height 1.2s cubic-bezier(.2,1,.3,1)}
+  .bar.lead .fill{background:var(--gold)}
+  .bar span{font-family:var(--display);font-weight:800;font-size:15px}
+  .bar-labels{display:flex;justify-content:center;gap:18px;padding:0 8px;margin-bottom:22px}
+  .bar-labels b{flex:1;max-width:70px;font-family:var(--display);color:var(--gold);font-size:18px}
+
+  .students{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0 22px}
+  .student{background:var(--graphite);border:var(--ink);border-radius:16px;padding:14px 10px;box-shadow:0 5px 0 #000;opacity:0;animation:qIn .4s forwards}
+  .student:nth-child(2){animation-delay:.25s}.student:nth-child(3){animation-delay:.5s}
+  .avatar{width:54px;height:54px;margin:0 auto 8px;border-radius:50%;background:var(--light);border:var(--ink);display:grid;place-items:center;color:var(--black)}
+  .avatar svg{width:30px;height:30px}
+  .student small{display:block;font-size:11px;color:var(--light);margin-bottom:8px}
+  .student .pick{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--gold);color:var(--black);border:2px solid #000;font-family:var(--display);font-weight:800;font-size:20px}
+
+  /* ---------- RESPONSIVO ---------- */
+  @media (max-width:960px){
+    main.board{grid-template-columns:1fr}
+    .ladder{order:-1}
+    .ladder ol{flex-direction:row-reverse;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding-bottom:4px;scrollbar-width:thin}
+    .ladder li{flex-direction:column;min-width:84px;gap:2px;padding:6px 8px;border-color:var(--graphite)}
+    .ladder li.current{transform:none}
+    .ladder .legend{display:none}
+  }
+  @media (max-width:640px){
+    .app{padding:28px 12px 20px}
+    .answers{grid-template-columns:1fr}
+    .frame-inner{padding:30px 18px 24px}
+    .chip{min-width:0;flex:1}
+    .scores{width:100%}
+    .rules{grid-template-columns:1fr}
+    .cards{gap:8px}
+    .help small{display:none}
+  }
+</style>
+</head>
+<body>
+  <div class="stage" aria-hidden="true">
+    <div class="beam b1"></div><div class="beam b2"></div><div class="beam b3"></div><div class="beam b4"></div>
+    <div class="rig"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <img class="logo" src="./img/logo.png" alt="Logo GALAPOS" />
+        <div class="brand-text">
+          <strong>GALAPOS</strong>
+          <small>Show do Milhão · Subvenção</small>
+        </div>
+      </div>
+      <div class="scores" aria-live="polite">
+        <div class="chip hit"><span>Acertar</span><b id="sHit">R$ 1 mil</b></div>
+        <div class="chip"><span>Parar</span><b id="sStop">R$ 0</b></div>
+        <div class="chip miss"><span>Errar</span><b id="sMiss">R$ 0</b></div>
+      </div>
+    </header>
+
+    <main class="board">
+      <section class="play" aria-label="Pergunta atual">
+        <div class="frame">
+          <div class="frame-inner">
+            <div class="bulbs top" aria-hidden="true"></div>
+            <div class="bulbs bottom" aria-hidden="true"></div>
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <div class="q-meta">
+              <div class="q-meta-left">
+                <span class="badge" id="qBadge">Pergunta 1 de 20</span>
+                <span class="topic" id="qTopic">Tópico</span>
+              </div>
+              <div class="timer" id="timer" role="timer" aria-label="Tempo restante">
+                <svg viewBox="0 0 64 64" aria-hidden="true"><circle class="track" cx="32" cy="32" r="27"/><circle class="prog" id="timerProg" cx="32" cy="32" r="27"/></svg>
+                <b id="timerNum">60</b>
+              </div>
+            </div>
+            <h1 class="question" id="question">Carregando...</h1>
+          </div>
+        </div>
+
+        <div class="answers" id="answers" role="group" aria-label="Alternativas"></div>
+
+        <div class="confirm" id="confirm" role="dialog" aria-label="Confirmar resposta">
+          <p>Está certo disso? Resposta <em id="confirmLetter">A</em></p>
+          <div class="row">
+            <button class="btn ghost" id="btnCancel">Não, voltar</button>
+            <button class="btn gold" id="btnConfirm">Sim, estou certo!</button>
+          </div>
+        </div>
+
+        <div class="feedback" id="feedback" aria-live="polite">
+          <div class="fb-text">
+            <span class="tag">Explicação</span>
+            <strong id="fbTitle">Resposta certa!</strong>
+            <p id="fbText"></p>
+          </div>
+          <button class="btn gold" id="btnNext">Próxima pergunta
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+
+        <div class="helps" aria-label="Ajudas">
+          <button class="help" id="hCards">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="11" height="15" rx="2"/><path d="M10 3h9a2 2 0 0 1 2 2v12"/></svg></span>
+            <span><b>Cartas</b><small>Elimina erradas</small></span>
+          </button>
+          <button class="help" id="hUni">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg></span>
+            <span><b>Especialistas</b><small>3 consultores</small></span>
+          </button>
+          <button class="help" id="hAud">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span>
+            <span><b>Plateia</b><small>Votação geral</small></span>
+          </button>
+          <button class="help" id="hSkip">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5l8 7-8 7zM15 5v14"/></svg></span>
+            <span><b>Pular <span id="skipLeft">(3)</span></b><small>Troca a pergunta</small></span>
+          </button>
+          <button class="help stop" id="hStop">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></span>
+            <span><b>Parar</b><small>Leva o prêmio</small></span>
+          </button>
+        </div>
+      </section>
+
+      <aside class="ladder" aria-label="Escada de prêmios">
+        <h2>Prêmios</h2>
+        <ol id="ladder"></ol>
+        <p class="legend">Ponto dourado = prêmio garantido</p>
+      </aside>
+    </main>
+  </div>
+
+  <!-- INTRO -->
+  <div class="overlay show" id="ovIntro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+    <div class="panel">
+      <img class="hero-logo" src="./img/logo.png" alt="Logo GALAPOS" />
+      <span class="kicker">GALAPOS apresenta</span>
+      <h2 class="title" id="introTitle">Show do <span class="g">Milhão</span></h2>
+      <div class="title-sub">Edição Subvenção Econômica · FINEP</div>
+      <div class="rules">
+        <div><b>16</b><span>perguntas sobre PD&amp;I, FINEP e elaboração de propostas.</span></div>
+        <div><b>60s</b><span>por pergunta. Leia com atenção antes de confirmar.</span></div>
+        <div><b>4</b><span>ajudas: cartas, especialistas, plateia e pular (3x).</span></div>
+      </div>
+      <button class="btn gold xl" id="btnStart">Começar o jogo</button>
+    </div>
+  </div>
+
+  <!-- FIM -->
+  <div class="overlay" id="ovEnd" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+    <div class="panel">
+      <div class="trophy" id="endIcon"></div>
+      <span class="kicker" id="endKicker">Fim de jogo</span>
+      <h2 class="modal-title" id="endTitle">Parabéns!</h2>
+      <div class="prize" id="endPrize">R$ 0</div>
+      <p class="desc" id="endDesc"></p>
+      <div class="stats">
+        <div><b id="stHits">0</b><span>Acertos</span></div>
+        <div><b id="stHelps">0</b><span>Ajudas usadas</span></div>
+      </div>
+      <button class="btn gold xl" id="btnRestart">Jogar novamente</button>
+    </div>
+  </div>
+
+  <!-- AJUDA -->
+  <div class="overlay" id="ovHelp" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="panel">
+      <span class="kicker" id="helpKicker">Ajuda</span>
+      <h2 class="modal-title" id="helpTitle">Ajuda</h2>
+      <p class="desc" id="helpDesc"></p>
+      <div id="helpBody"></div>
+      <button class="btn gold" id="btnHelpClose">Voltar para a pergunta</button>
+    </div>
+  </div>
+
+<script>
+const QUESTIONS = [
+  {t:"Conceito e Legislação",q:"Qual é a definição e finalidade da Subvenção Econômica segundo a legislação brasileira (Lei 10.973/2004 e Lei 11.196/2005)?",o:["Financiamento bancário reembolsável com juros reduzidos para capital de giro.","Instrumento governamental de apoio que oferece recursos públicos não reembolsáveis para empresas investirem em PD&I, compartilhando custos e riscos.","Isenção fiscal permanente de impostos estaduais para empresas exportadoras.","Subsídio direto para contratação de mão de obra não qualificada."],a:1,e:"A Subvenção Econômica (Lei nº 10.973/2004 e Lei nº 11.196/2005) é um instrumento de apoio que concede recursos não reembolsáveis para compartilhar custos e riscos de projetos de PD&I em empresas brasileiras."},
+  {t:"Aderência Temática",q:"O que acontece com uma proposta caso os analistas da FINEP considerem que ela não possui aderência à linha temática do edital?",o:["O projeto é automaticamente inabilitado, sem sequer seguir para a análise de mérito.","O projeto recebe nota mínima apenas no quesito de mercado, mas continua sendo avaliado.","A empresa é convidada a trocar de edital sem perder o prazo.","A FINEP readequa o projeto para outra linha temática de forma autônoma."],a:0,e:"A aderência à linha temática e às políticas públicas é o critério essencial de habilitação. Se a proposta não for considerada aderente, ela é inabilitada e nem segue para a análise de mérito."},
+  {t:"Objetivo Geral",q:"Quais são os três elementos indispensáveis que devem compor a redação do Objetivo Geral de uma proposta de subvenção?",o:["Histórico da empresa, orçamento detalhado e lista de fornecedores.","Aplicação/finalidade (O quê?), tecnologias utilizadas (Como?) e resultados/impactos esperados (Por quê?).","Plano de marketing, cotações financeiras e currículo dos diretores.","Localização da fábrica, cronograma de desembolso e faturamento dos últimos 3 anos."],a:1,e:"O Objetivo Geral deve explicitar a finalidade ou aplicação (O quê?), as tecnologias utilizadas (Como?) e os resultados ou impactos esperados (Por quê?)."},
+  {t:"Objetivo Geral",q:"Qual é a regra da FINEP sobre a alteração do Objetivo Geral aprovado durante a execução do projeto?",o:["O objetivo fim aprovado não pode sofrer alteração, embora os meios e rotas de P&D para alcançá-lo possam ser ajustados.","O objetivo geral pode ser alterado livremente a qualquer momento pela empresa.","Os meios de P&D são imutáveis, mas o objetivo final do produto pode ser alterado.","Qualquer alteração requer o cancelamento completo do contrato e devolução dos recursos."],a:0,e:"A FINEP não permite alterar o objetivo fim aprovado do projeto. O que pode ser ajustado durante o desenvolvimento são os meios técnicos ou rotas tecnológicas para alcançar esse objetivo."},
+  {t:"Resumo Publicável",q:"Qual é a principal particularidade e cuidado ao redigir o campo 'Resumo Publicável' na proposta?",o:["Deve conter o detalhamento completo dos segredos industriais para comprovar a tecnologia.","É o único campo divulgado publicamente pela FINEP, devendo focar na inovação e benefícios sem expor dados estratégicos ou sigilosos.","Deve conter tabelas detalhadas do orçamento financeiro aprovado.","É um texto exclusivo para avaliação sigilosa da banca examinadora externa."],a:1,e:"O Resumo Publicável é a única informação que a FINEP tem autorização para divulgar publicamente. Por isso, deve-se focar nos benefícios e na inovação, evitando detalhes estratégicos ou segredos corporativos."},
+  {t:"Descrição do Projeto",q:"Qual é a estrutura lógica de 4 partes recomendada para elaborar o tópico de 'Descrição do Projeto'?",o:["Orçamento → Fornecedores → Patentes → Vendas.","Contexto do problema → Solução proposta → Etapas de P&D (TRLs) → Resultados esperados.","Histórico corporativo → Certificações ISO → Currículos → Balanço financeiro.","Análise da concorrência → Canais de distribuição → Royalties → Exportação."],a:1,e:"A descrição do projeto funciona como um resumo expandido e deve encadear: 1. Contexto do problema (dor), 2. Solução proposta, 3. Etapas de P&D e 4. Resultados esperados."},
+  {t:"Risco Tecnológico",q:"Como a incerteza ou risco tecnológico deve ser conceituada e demonstrada na proposta?",o:["Como uma falha no planejamento financeiro ou flutuação de mercado.","Como uma barreira de conhecimento técnico-científico que exige atividades de P&D e estratégias de teste para superá-la, sem apresentar soluções prontas prévias.","Afirmando que a tecnologia já está totalmente pronta e sem qualquer risco de falha.","Atribuindo o risco exclusivamente à falta de fornecedores de insumos comuns no mercado."],a:1,e:"O risco tecnológico refere-se a incertezas técnico-científicas reais em que o resultado é incerto por limitação de conhecimento à época. A proposta deve apresentar hipóteses e estratégias de P&D para investigar o problema, sem fingir que a solução já está pronta."},
+  {t:"Maturidade Tecnológica (TRL)",q:"Qual é a faixa de TRL usualmente financiada pelo instrumento de Subvenção Econômica da FINEP?",o:["TRL 1 a TRL 2 (ideação e pesquisa básica teórica).","TRL 3 (prova de conceito) a TRL 7 (demonstração de protótipo em ambiente operacional).","TRL 8 a TRL 9 (produção comercial em escala total).","Apenas TRL 9 (comercialização e distribuição de mercado)."],a:1,e:"A Subvenção Econômica financia o desenvolvimento experimental que varia do TRL 3 (prova de conceito em laboratório) até o TRL 7 (demonstração de protótipo em ambiente operacional)."},
+  {t:"Maturidade Tecnológica (TRL)",q:"Qual entidade/mecanismo governamental costuma financiar projetos nos estágios TRL 1 e TRL 2 no Brasil?",o:["Subvenção econômica direta para grandes empresas industriais.","Agências de fomento como CNPq, CAPES e FAPs estaduais por meio de bolsas e auxílios a universidades/ICTs.","Financiamentos bancários comercialmente reembolsáveis com garantias reais.","Fundos privados de venture capital focados em comercialização."],a:1,e:"Projetos em TRL 1 e TRL 2 tratam de pesquisa básica teórica e princípios fundamentais, sendo tipicamente financiados por agências como CNPq, CAPES e FAPs junto a universidades e institutos de pesquisa."},
+  {t:"Qualificação e Parcerias",q:"Qual é a orientação recomendada quanto à participação de Instituições de Ciência e Tecnologia (ICTs) nos projetos de subvenção?",o:["As ICTs devem ser tratadas apenas como prestadoras de serviços básicos de suporte, como frete ou limpeza.","Considerar a participação de ICTs essencial, destinando cerca de 5% do valor captado para atuarem em desafios estratégicos de risco tecnológico.","Evitar qualquer parceria com ICTs para não compartilhar os direitos sobre os resultados.","Transferir 100% da execução técnica e orçamentária do projeto para a ICT parceira."],a:1,e:"Recomenda-se considerar o envolvimento de ICTs como item indispensável, destinando por volta de 5% dos recursos captados para que a ICT atue diretamente nos gargalos de conhecimento e risco tecnológico."},
+  {t:"Qualificação e Parcerias",q:"Qual é a diferença funcional entre uma empresa 'Coexecutora' e um 'Prestador de Serviços' no projeto?",o:["Coexecutoras aportam RH e participam estrategicamente da P&D; Prestadores de Serviços executam ensaios, testes ou análises pontuais.","Coexecutoras apenas realizam auditoria contábil; Prestadores de Serviços detêm a propriedade intelectual.","Não há diferença, ambos possuem exatamente os mesmos papéis e direitos contratuais.","Prestadores de Serviços assumem o risco do projeto; Coexecutoras fornecem matérias-primas gratuitas."],a:0,e:"Coexecutoras fornecem recursos humanos e participam ativamente da P&D e da gestão estratégica do projeto. Já os prestadores de serviços são contratados para tarefas específicas, ensaios, análises ou testes."},
+  {t:"Dados Institucionais",q:"Em relação aos investimentos prévios em P&D nos Dados Institucionais, qual prática NUNCA deve ser adotada pela empresa proponente?",o:["Destacar o uso de incentivos como a Lei do Bem ou projetos anteriores FINEP/ANEEL/FAPs.","Informar a ausência total de investimento prévio em P&D pela empresa.","Detalhar os gastos com equipe própria e materiais de laboratório dos anos anteriores.","Comprovar histórico contínuo de inovação técnica no setor de atuação."],a:1,e:"A FINEP busca apoiar empresas que já possuem cultura e trajetória de inovação. Informar ausência de investimentos prévios em P&D é altamente prejudicial, pois compromete a avaliação da capacidade de execução."},
+  {t:"Análise de Mérito",q:"Quais são os 3 pilares fundamentais que estruturam a Análise de Mérito de uma proposta na FINEP?",o:["Grau de Inovação, Relevância da Inovação e Consistência da Proposta.","Menor Preço, Tempo de Mercado e Quantidade de Funcionários.","Faturamento Bruto, Capital Social e Número de Filiais.","Patrimônio Líquido, Isenção Fiscal e Capital Estrangeiro."],a:0,e:"A avaliação de mérito da FINEP baseia-se em três pilares: 1. Grau de Inovação, 2. Relevância da Inovação e 3. Consistência da Proposta."},
+  {t:"Análise de Mérito",q:"Qual é a exigência mínima de nota no pilar 'Consistência da Proposta' para aprovação final no edital?",o:["Obter nota mínima de 50% do valor total da proposta.","Proposta consistente e atingimento de pelo menos 75% da pontuação máxima possível considerando Grau e Relevância da Inovação.","Aprovação unânime de 100% dos pareceristas sem qualquer ressalva técnica.","Atingir nota 3 no quesito de internacionalização obrigatoriamente."],a:1,e:"Para aprovação, a proposta deve ser considerada consistente e obter uma nota mínima de 75% em relação à pontuação máxima possível no conjunto de Grau e Relevância da Inovação."},
+  {t:"Informações de Mercado",q:"O que a proposta deve apresentar no tópico de 'Potencial de Internacionalização'?",o:["Obrigatoriedade de contrato de exportação assinado e faturamento externo imediato.","Argumentos e estudos demonstrando que a inovação possui atributos competitivos para expansão global, mesmo que a exportação não seja imediata.","Declaração de que o produto atenderá exclusivamente ao mercado municipal.","Comprovação de filiais abertas em pelo menos 3 continentes."],a:1,e:"A exportação não precisa estar nos planos imediatos, mas a proposta deve apresentar postura propositiva e argumentos sólidos evidenciando o potencial da inovação para competir no mercado internacional."},
+  {t:"Estratégia de Comercialização",q:"Qual documento complementar é fortemente recomendado obter com parceiros/clientes para enriquecer a Estratégia de Comercialização?",o:["Contrato social registrado em cartório dos concorrentes.","Cartas de Interesse de clientes-alvo ou parceiros estratégicos do setor.","Balanço patrimonial auditado dos fornecedores de insumos.","Laudo de avaliação imobiliária dos prédios comerciais da empresa."],a:1,e:"A obtenção de Cartas de Interesse junto a clientes-alvo ou parceiros estratégicos é uma boa prática que comprova a atratividade comercial e a demanda de mercado pelo produto em desenvolvimento."},
+  {t:"Orçamento e Alocação",q:"Quais tipos de despesas são priorizados e melhor avaliados pela FINEP na alocação dos recursos da subvenção?",o:["Construção de obras civis administrativas e compra de veículos da diretoria.","Itens diretamente intensivos em P&D, como equipes técnicas (RH), serviços especializados de P&D/testes e materiais de prototipagem.","Campanhas publicitárias na televisão e contratação de agências de marketing.","Aquisição de máquinas importadas de prateleira sem desenvolvimento tecnológico."],a:1,e:"Propostas que concentram o orçamento em despesas diretamente intensivas em P&D (pessoal técnico, serviços tecnológicos, ensaios e materiais para protótipos) recebem melhor avaliação da FINEP."},
+  {t:"Cronograma Físico e Indicadores",q:"Qual é a recomendação técnica para a estruturação das macroetapas e indicadores no Cronograma Físico?",o:["Criar uma única etapa genérica cobrindo os 36 meses do projeto.","Associar cada macroetapa a um TRL específico e definir indicadores objetivos e verificáveis (ex.: relatórios de testes, fotos de protótipos).","Definir indicadores baseados apenas em opiniões subjetivas da equipe de vendas.","Vincular a conclusão das etapas exclusivamente ao volume de receitas de vendas geradas."],a:1,e:"Cada macroetapa deve estar atrelada a uma evolução de TRL com 2 a 3 atividades e indicadores físicos concretos e verificáveis (como relatórios técnicos e registros de ensaios) anexáveis ao sistema FINEP."},
+  {t:"Boas Práticas de Redação",q:"Qual é o tom e o estilo gramatical adequado ao redigir os campos de Objetivo, Descrição do Projeto e Resultados?",o:["Linguagem publicitária de marketing, escrita em primeira pessoa do singular ('Eu desenvolvi...').","Linguagem técnica, formal e impessoal (terceira pessoa), utilizando tempo futuro para objetivos/resultados e apresentando fatos objetivos.","Estilo informal e coloquial, utilizando adjetivos vagos como 'revolucionário' e 'incomparável' sem justificativa.","Uso de gírias corporativas e promessas garantidas de aprovação e lucro extraordinário."],a:1,e:"A proposta deve ser redigida em linguagem técnica, formal e impessoal ('o projeto propõe', 'será desenvolvido'), usando o tempo futuro para metas/resultados e evitando tom promocional ou adjetivos vagos."},
+  {t:"Resultados e Impactos",q:"Além do impacto econômico direto na empresa proponente, como devem ser apresentados os Impactos Sociais e Ambientais da proposta?",o:["Limitando-se a citar o ganho de margem de lucro interna da diretoria.","Demonstrando benefícios amplos para a sociedade e cadeia produtiva, como geração de empregos qualificados, redução de pegada ambiental, sustentabilidade e eficiência energética.","Ignorando os impactos ambientais por não serem avaliados no edital.","Apresentando apenas os impostos recolhidos no município sem detalhar externalidades."],a:1,e:"Os impactos devem extrapolar o ambiente interno da empresa, demonstrando externalidades positivas para a sociedade (saúde, emprego qualificado, habitação) e sustentabilidade ambiental (redução de emissões, matriz limpa, economia circular)."}
+];
+
+/* 16 rodadas + até 3 reservas para a ajuda "Pular" (20 perguntas no total) */
+const ROUNDS = 16;
+const PRIZES = [1e3,2e3,3e3,4e3,5e3,10e3,20e3,30e3,40e3,50e3,100e3,200e3,300e3,400e3,500e3,1e6];
+const SAFE = [4,9];
+const LETTERS = ["A","B","C","D"];
+const TIME = 60;
+
+const $ = id => document.getElementById(id);
+const fmt = v => v >= 1e6 ? "R$ 1 MILHÃO" : v >= 1e3 ? `R$ ${v/1e3} mil` : `R$ ${v}`;
+const shuffle = arr => { const a = [...arr]; for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
+
+let S = {};
+
+function prepareQuestion(raw){
+  const order = shuffle([0,1,2,3]);
+  return {...raw, o: order.map(i => raw.o[i]), a: order.indexOf(raw.a)};
+}
+
+function newGame(){
+  const deck = shuffle(QUESTIONS).map(prepareQuestion);
+  S = { deck, pool: deck.slice(ROUNDS), round:0, q:null, picked:null, locked:false, skips:3, used:{cards:false,uni:false,aud:false}, helpsUsed:0, timer:null, left:TIME, eliminated:[] };
+  S.deck = deck.slice(0, ROUNDS);
+  ["hCards","hUni","hAud","hSkip","hStop"].forEach(id => $(id).disabled = false);
+  $("skipLeft").textContent = "(3)";
+  buildLadder();
+  loadRound();
+}
+
+function buildBulbs(){
+  document.querySelectorAll(".bulbs").forEach(b => { b.innerHTML = "<i></i>".repeat(14); });
+}
+
+function buildLadder(){
+  $("ladder").innerHTML = PRIZES.map((p,i) => `<li data-i="${i}" class="${SAFE.includes(i)?"safe":""} ${i===PRIZES.length-1?"top":""}"><span class="n">${i+1}</span><span class="v">${fmt(p)}</span></li>`).join("");
+}
+
+function stopValue(){ return S.round === 0 ? 0 : PRIZES[S.round-1]; }
+function missValue(){
+  if (S.round === PRIZES.length-1) return 0;
+  let safe = 0; SAFE.forEach(i => { if (S.round > i) safe = PRIZES[i]; });
+  return Math.max(safe, Math.floor(stopValue()/2));
+}
+
+function updateHud(){
+  $("sHit").textContent = fmt(PRIZES[S.round]);
+  $("sStop").textContent = fmt(stopValue());
+  $("sMiss").textContent = fmt(missValue());
+  document.querySelectorAll("#ladder li").forEach(li => {
+    const i = +li.dataset.i;
+    li.classList.toggle("done", i < S.round);
+    li.classList.toggle("current", i === S.round);
+  });
+  const cur = document.querySelector("#ladder li.current");
+  if (cur && window.innerWidth <= 960) cur.scrollIntoView({block:"nearest",inline:"center",behavior:"smooth"});
+}
+
+function loadRound(){
+  S.q = S.deck[S.round];
+  S.picked = null; S.locked = false; S.eliminated = [];
+  $("qBadge").textContent = S.round === PRIZES.length-1 ? "Pergunta do Milhão" : `Pergunta ${S.round+1} de ${ROUNDS}`;
+  $("qTopic").textContent = S.q.t;
+  const qEl = $("question");
+  qEl.textContent = S.q.q;
+  qEl.classList.remove("enter"); void qEl.offsetWidth; qEl.classList.add("enter");
+  $("answers").innerHTML = S.q.o.map((txt,i) => `<button class="ans" data-i="${i}" aria-label="Alternativa ${LETTERS[i]}: ${txt.replace(/"/g,"&quot;")}"><span class="letter">${LETTERS[i]}</span><span>${txt}</span></button>`).join("");
+  document.querySelectorAll(".ans").forEach(b => b.addEventListener("click", () => pick(+b.dataset.i)));
+  $("confirm").classList.remove("show");
+  $("feedback").classList.remove("show");
+  $("hSkip").disabled = S.skips === 0 || S.round === PRIZES.length-1;
+  setHelpsLocked(false);
+  updateHud();
+  startTimer();
+}
+
+function setHelpsLocked(lock){
+  $("hCards").disabled = lock || S.used.cards;
+  $("hUni").disabled = lock || S.used.uni;
+  $("hAud").disabled = lock || S.used.aud;
+  $("hSkip").disabled = lock || S.skips === 0 || S.round === PRIZES.length-1;
+  $("hStop").disabled = lock;
+}
+
+function startTimer(){
+  clearInterval(S.timer);
+  S.left = TIME;
+  const circ = 2*Math.PI*27;
+  const prog = $("timerProg");
+  prog.style.strokeDasharray = circ;
+  const tick = () => {
+    $("timerNum").textContent = Math.ceil(S.left);
+    prog.style.strokeDashoffset = circ * (1 - S.left/TIME);
+    $("timer").classList.toggle("low", S.left <= 10);
+  };
+  tick();
+  S.timer = setInterval(() => {
+    S.left = Math.max(0, S.left - .1);
+    tick();
+    if (S.left <= 0){ clearInterval(S.timer); timeOut(); }
+  }, 100);
+}
+function pauseTimer(){ clearInterval(S.timer); }
+function resumeTimer(){
+  const left = S.left; startTimer(); S.left = left;
+}
+
+function pick(i){
+  if (S.locked || S.eliminated.includes(i)) return;
+  S.picked = i;
+  document.querySelectorAll(".ans").forEach(b => b.classList.toggle("selected", +b.dataset.i === i));
+  $("confirmLetter").textContent = LETTERS[i];
+  $("confirm").classList.add("show");
+  $("btnConfirm").focus();
+}
+
+function cancelPick(){
+  S.picked = null;
+  document.querySelectorAll(".ans").forEach(b => b.classList.remove("selected"));
+  $("confirm").classList.remove("show");
+}
+
+function lockAnswers(){
+  S.locked = true;
+  document.querySelectorAll(".ans").forEach(b => b.disabled = true);
+  setHelpsLocked(true);
+}
+
+function confirmPick(){
+  if (S.picked === null) return;
+  pauseTimer(); lockAnswers();
+  $("confirm").classList.remove("show");
+  const btn = document.querySelector(`.ans[data-i="${S.picked}"]`);
+  btn.classList.remove("selected"); btn.classList.add("suspense");
+  setTimeout(() => {
+    btn.classList.remove("suspense");
+    reveal(S.picked === S.q.a);
+  }, 1600);
+}
+
+function reveal(correct, timedOut){
+  const right = document.querySelector(`.ans[data-i="${S.q.a}"]`);
+  right.classList.add("correct");
+  if (!correct && S.picked !== null) document.querySelector(`.ans[data-i="${S.picked}"]`).classList.add("wrong");
+  const fb = $("feedback");
+  fb.classList.remove("ok","bad");
+  fb.classList.add(correct ? "ok" : "bad","show");
+  $("fbTitle").textContent = correct
+    ? `Resposta certa! Você garantiu ${fmt(PRIZES[S.round])}.`
+    : timedOut ? `O tempo acabou! A correta era a ${LETTERS[S.q.a]}.` : `Resposta errada! A correta era a ${LETTERS[S.q.a]}.`;
+  $("fbText").textContent = S.q.e;
+  const last = S.round === PRIZES.length-1;
+  $("btnNext").firstChild.textContent = correct ? (last ? "Ver resultado " : "Próxima pergunta ") : "Ver resultado ";
+  S.lastCorrect = correct;
+  $("btnNext").focus();
+}
+
+function next(){
+  if (!S.lastCorrect){ endGame("lose"); return; }
+  if (S.round === PRIZES.length-1){ S.round++; endGame("win"); return; }
+  S.round++;
+  loadRound();
+}
+
+function timeOut(){
+  lockAnswers();
+  $("confirm").classList.remove("show");
+  S.picked = null;
+  reveal(false, true);
+}
+
+function endGame(kind){
+  pauseTimer();
+  const trophy = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/></svg>';
+  const flag = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4M5 4h12l-2 4 2 4H5"/></svg>';
+  let prize, title, kicker, desc;
+  const hits = kind === "win" ? ROUNDS : S.round;
+  if (kind === "win"){ prize = PRIZES.at(-1); kicker="Campeão absoluto"; title="Você ganhou o milhão!"; desc="Domínio total de <strong>Subvenção Econômica</strong>. Sua próxima proposta para a FINEP está em ótimas mãos."; }
+  else if (kind === "stop"){ prize = stopValue(); kicker="Decisão estratégica"; title="Você parou o jogo"; desc="Saber a hora de parar também é estratégia. Revise os tópicos e volte para buscar o <strong>milhão</strong>."; }
+  else { prize = missValue(); kicker="Fim de jogo"; title="Não foi dessa vez"; desc="Cada erro é uma oportunidade de aprendizado. Revise a explicação e tente novamente para chegar ao <strong>milhão</strong>."; }
+  $("endIcon").innerHTML = kind === "lose" ? flag : trophy;
+  $("endIcon").classList.toggle("lose", kind === "lose");
+  $("endKicker").textContent = kicker;
+  $("endTitle").textContent = title;
+  $("endPrize").textContent = fmt(prize);
+  $("endDesc").innerHTML = desc;
+  $("stHits").textContent = hits;
+  $("stHelps").textContent = S.helpsUsed;
+  $("ovEnd").classList.add("show");
+  $("btnRestart").focus();
+}
+
+/* ---------- AJUDAS ---------- */
+function openHelp(kicker, title, desc, body){
+  pauseTimer(); cancelPick();
+  $("helpKicker").textContent = kicker;
+  $("helpTitle").textContent = title;
+  $("helpDesc").textContent = desc;
+  $("helpBody").innerHTML = body;
+  $("ovHelp").classList.add("show");
+}
+function closeHelp(){
+  $("ovHelp").classList.remove("show");
+  if (!S.locked) resumeTimer();
+}
+
+function wrongOptions(){ return [0,1,2,3].filter(i => i !== S.q.a && !S.eliminated.includes(i)); }
+
+function eliminate(n){
+  const wrong = shuffle(wrongOptions()).slice(0,n);
+  wrong.forEach(i => {
+    S.eliminated.push(i);
+    const b = document.querySelector(`.ans[data-i="${i}"]`);
+    b.classList.add("out"); b.disabled = true;
+  });
+  return wrong.length;
+}
+
+function useCards(){
+  S.used.cards = true; S.helpsUsed++; $("hCards").disabled = true;
+  const values = shuffle([0,1,2,3]);
+  const html = `<div class="cards">${values.map((v,i)=>`<button class="card" data-v="${v}" aria-label="Carta ${i+1}"><span class="face back"><img src="./img/logo.png" alt=""></span><span class="face front"><b>${v}</b><small>${v===1?"elimina":"eliminam"}</small></span></button>`).join("")}</div>`;
+  openHelp("Ajuda · Cartas","Escolha uma carta","O número revelado indica quantas alternativas erradas serão eliminadas.",html);
+  document.querySelectorAll(".card").forEach(c => c.addEventListener("click", () => {
+    if (document.querySelector(".card.flip")) return;
+    c.classList.add("flip");
+    document.querySelectorAll(".card").forEach(o => { if (o!==c) o.setAttribute("disabled",""); });
+    const n = +c.dataset.v;
+    setTimeout(() => {
+      document.querySelectorAll(".card").forEach(o => o.classList.add("flip"));
+      const removed = eliminate(n);
+      $("helpDesc").textContent = removed ? `${removed} alternativa${removed>1?"s":""} errada${removed>1?"s":""} eliminada${removed>1?"s":""}!` : "Que azar! Nenhuma alternativa eliminada.";
+    }, 700);
+  }));
+}
+
+function smartGuess(accuracy){
+  const avail = [0,1,2,3].filter(i => !S.eliminated.includes(i));
+  if (Math.random() < accuracy) return S.q.a;
+  return avail[Math.floor(Math.random()*avail.length)];
+}
+
+function useUni(){
+  S.used.uni = true; S.helpsUsed++; $("hUni").disabled = true;
+  const people = [["Consultora","Especialista FINEP"],["Analista","Gestão de PD&I"],["Pesquisador","ICT parceira"]];
+  const user = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg>';
+  const html = `<div class="students">${people.map(([n,r])=>`<div class="student"><div class="avatar">${user}</div><b>${n}</b><small>${r}</small><span class="pick">${LETTERS[smartGuess(.72)]}</span></div>`).join("")}</div>`;
+  openHelp("Ajuda · Especialistas","Opinião dos especialistas","Três consultores dão o palpite deles. A decisão final é sua.",html);
+}
+
+function useAud(){
+  S.used.aud = true; S.helpsUsed++; $("hAud").disabled = true;
+  const avail = [0,1,2,3].filter(i => !S.eliminated.includes(i));
+  const w = [0,0,0,0];
+  avail.forEach(i => w[i] = Math.random()*20 + 5);
+  w[S.q.a] += 45 + Math.random()*20;
+  const tot = w.reduce((a,b)=>a+b,0);
+  const pct = w.map(v => Math.round(v/tot*100));
+  const lead = pct.indexOf(Math.max(...pct));
+  const html = `<div class="bars">${pct.map((p,i)=>`<div class="bar ${i===lead?"lead":""}"><span>${p}%</span><div class="fill" data-h="${p}"></div></div>`).join("")}</div><div class="bar-labels">${LETTERS.map(l=>`<b>${l}</b>`).join("")}</div>`;
+  openHelp("Ajuda · Plateia","A plateia votou","Veja como o auditório respondeu a esta pergunta.",html);
+  requestAnimationFrame(() => setTimeout(() => document.querySelectorAll(".bar .fill").forEach(f => f.style.height = `${Math.max(2,f.dataset.h)*1.6}px`), 60));
+}
+
+function useSkip(){
+  if (S.skips === 0 || !S.pool.length) return;
+  S.skips--; S.helpsUsed++;
+  $("skipLeft").textContent = `(${S.skips})`;
+  S.deck[S.round] = S.pool.shift();
+  loadRound();
+}
+
+function useStop(){
+  pauseTimer(); lockAnswers();
+  endGame("stop");
+}
+
+/* ---------- EVENTOS ---------- */
+$("btnStart").addEventListener("click", () => { $("ovIntro").classList.remove("show"); newGame(); });
+$("btnRestart").addEventListener("click", () => { $("ovEnd").classList.remove("show"); newGame(); });
+$("btnConfirm").addEventListener("click", confirmPick);
+$("btnCancel").addEventListener("click", cancelPick);
+$("btnNext").addEventListener("click", next);
+$("btnHelpClose").addEventListener("click", closeHelp);
+$("hCards").addEventListener("click", useCards);
+$("hUni").addEventListener("click", useUni);
+$("hAud").addEventListener("click", useAud);
+$("hSkip").addEventListener("click", useSkip);
+$("hStop").addEventListener("click", useStop);
+
+document.addEventListener("keydown", e => {
+  if (document.querySelector(".overlay.show") || !S.q) return;
+  const k = e.key.toUpperCase();
+  const idx = LETTERS.indexOf(k) >= 0 ? LETTERS.indexOf(k) : ["1","2","3","4"].indexOf(k);
+  if (idx >= 0 && !S.locked) pick(idx);
+  if (k === "ESCAPE" && !S.locked) cancelPick();
+});
+
+buildBulbs();
+buildLadder();
+</script>
+</body>
+</html>
